@@ -33,7 +33,9 @@ import com.example.mapsapp.viewmodels.PermissionViewModel
 import kotlin.text.get
 
 @Composable
-fun PermissionsScreen(){
+fun PermissionsScreen(navigateToDrawer: () -> Unit) {
+
+    //Hacer un if
     val activity = LocalContext.current
     val viewModel = viewModel<PermissionViewModel>()
 
