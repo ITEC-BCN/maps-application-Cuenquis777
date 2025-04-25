@@ -30,7 +30,6 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mapsapp.utils.PermissionStatus
 import com.example.mapsapp.viewmodels.PermissionViewModel
-import kotlin.text.get
 
 @Composable
 fun PermissionsScreen(navigateToDrawer: () -> Unit) {
@@ -55,7 +54,11 @@ fun PermissionsScreen(navigateToDrawer: () -> Unit) {
             val granted = result[permission] ?: false
             val status = when {
                 granted -> PermissionStatus.Granted
-                ActivityCompat.shouldShowRequestPermissionRationale(activity!! as Activity, permission) -> PermissionStatus.Denied
+                ActivityCompat.shouldShowRequestPermissionRationale(
+                    activity!! as Activity,
+                    permission
+                ) -> PermissionStatus.Denied
+
                 else -> PermissionStatus.PermanentlyDenied
             }
             viewModel.updatePermissionStatus(permission, status)
@@ -74,7 +77,6 @@ fun PermissionsScreen(navigateToDrawer: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text("Permissions status:", fontSize = 24.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(16.dp))
         permissions.forEach { permission ->
             val status = permissionsStatus[permission]
@@ -88,20 +90,26 @@ fun PermissionsScreen(navigateToDrawer: () -> Unit) {
             Text("$permissionName: $label")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        if (permissions.any {
+        //si todos los persimisos estan permitidos navegamos a Drawer
+        if (permissions.all {
+                permissionsStatus[it] == PermissionStatus.Granted
+            }) {
+            navigateToDrawer()
+        }
+
+        else if(permissions.any {
                 permissionsStatus[it] == PermissionStatus.Denied
-            }
-        ) {
+            }) {
             Button(onClick = {
                 launcher.launch(permissions.toTypedArray())
             }) {
                 Text("Apply again")
             }
         }
-        if (permissions.any {
+
+        else if (permissions.any {
                 permissionsStatus[it] == PermissionStatus.PermanentlyDenied
-            }
-        ) {
+            }) {
             Spacer(modifier = Modifier.height(8.dp))
             Button(onClick = {
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {

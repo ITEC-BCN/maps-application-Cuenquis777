@@ -15,12 +15,14 @@ sealed class Destinations {
 
     @Serializable
     object List : Destinations()
+
     /*
     @Serializable
-    data class MarkerCreation(coordenades: LatLng)
+    data class MarkerCreation(val coordenades: LatLng)
 
     @Serializable
     data class MarkerDetails(val id: Int) : Destinations()
 
      */
+
 }
