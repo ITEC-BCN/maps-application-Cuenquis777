@@ -1,6 +1,8 @@
 package com.example.mapsapp.ui.screens
 
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -18,6 +20,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.mapsapp.ui.navigation.Destinations
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.ui.unit.dp
+import com.example.mapsapp.ui.navigation.InternalNavigationWrapper
 import kotlinx.coroutines.launch
 
 enum class DrawerItem(
@@ -30,18 +34,27 @@ enum class DrawerItem(
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DrawerScreen (){
+fun DrawerScreen() {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    var selectedItemIndex by remember { mutableStateOf(0) }
+    var selectedItemIndex by remember { mutableIntStateOf(0) }
+
     ModalNavigationDrawer(
         drawerContent = {
-            ModalDrawerSheet {
+            ModalDrawerSheet(
+                modifier = Modifier.width(300.dp)
+            ) {
                 DrawerItem.entries.forEachIndexed { index, drawerItem ->
                     NavigationDrawerItem(
-                        icon = {Icon(imageVector = drawerItem.icon, contentDescription = drawerItem.text)},
+                        icon = {
+                            Icon(
+                                imageVector = drawerItem.icon,
+                                contentDescription = drawerItem.text
+                            )
+                        },
                         label = { Text(text = drawerItem.text) },
                         selected = index == selectedItemIndex,
                         onClick = {
@@ -55,19 +68,22 @@ fun DrawerScreen (){
         },
         drawerState = drawerState
     )
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Awesome App") },
-                navigationIcon = {
-                    IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                        Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
+    {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text("Awesome App") },
+                    navigationIcon = {
+                        IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                            Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
+                        }
                     }
-                }
-            )
+                )
+            }
+        ) { innerPadding ->
+            InternalNavigationWrapper(navController, Modifier.padding(innerPadding))
         }
-    ) { innerPadding ->
-        InternalNavigationWrapper(navController, Modifier.padding(innerPadding))
     }
 }
+
 

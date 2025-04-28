@@ -30,11 +30,13 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mapsapp.utils.PermissionStatus
 import com.example.mapsapp.viewmodels.PermissionViewModel
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun PermissionsScreen(navigateToDrawer: () -> Unit) {
 
-    //Hacer un if
     val activity = LocalContext.current
     val viewModel = viewModel<PermissionViewModel>()
 
@@ -72,52 +74,53 @@ fun PermissionsScreen(navigateToDrawer: () -> Unit) {
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black) //Fondo gris para que no se vean los permisos
     ) {
-        Spacer(Modifier.height(16.dp))
-        permissions.forEach { permission ->
-            val status = permissionsStatus[permission]
-            val label = when (status) {
-                null -> "Requesting..."
-                PermissionStatus.Granted -> "Granted"
-                PermissionStatus.Denied -> "Denied"
-                PermissionStatus.PermanentlyDenied -> "Permanently denied"
-            }
-            val permissionName = permission.removePrefix("android.permission.")
-            Text("$permissionName: $label")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        //si todos los persimisos estan permitidos navegamos a Drawer
-        if (permissions.all {
-                permissionsStatus[it] == PermissionStatus.Granted
-            }) {
-            navigateToDrawer()
-        }
-
-        else if(permissions.any {
-                permissionsStatus[it] == PermissionStatus.Denied
-            }) {
-            Button(onClick = {
-                launcher.launch(permissions.toTypedArray())
-            }) {
-                Text("Apply again")
-            }
-        }
-
-        else if (permissions.any {
-                permissionsStatus[it] == PermissionStatus.PermanentlyDenied
-            }) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Button(onClick = {
-                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                    data = Uri.fromParts("package", activity!!.packageName, null)
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Spacer(Modifier.height(16.dp))
+            permissions.forEach { permission ->
+                val status = permissionsStatus[permission]
+                val label = when (status) {
+                    null -> "Requesting..."
+                    PermissionStatus.Granted -> "Granted"
+                    PermissionStatus.Denied -> "Denied"
+                    PermissionStatus.PermanentlyDenied -> "Permanently denied"
                 }
-                activity!!.startActivity(intent)
-            }) {
-                Text("Go to settings")
+                val permissionName = permission.removePrefix("android.permission.")
+                Text("$permissionName: $label")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            if (permissions.all {
+                    permissionsStatus[it] == PermissionStatus.Granted
+                }) {
+                navigateToDrawer()
+            } else if (permissions.any {
+                    permissionsStatus[it] == PermissionStatus.Denied
+                }) {
+                Button(onClick = {
+                    launcher.launch(permissions.toTypedArray())
+                }) {
+                    Text("Apply again")
+                }
+            } else if (permissions.any {
+                    permissionsStatus[it] == PermissionStatus.PermanentlyDenied
+                }) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(onClick = {
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                        data = Uri.fromParts("package", activity!!.packageName, null)
+                    }
+                    activity!!.startActivity(intent)
+                }) {
+                    Text("Go to settings")
+                }
             }
         }
     }

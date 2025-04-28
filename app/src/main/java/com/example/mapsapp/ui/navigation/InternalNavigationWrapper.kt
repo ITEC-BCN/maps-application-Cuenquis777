@@ -1,11 +1,17 @@
 package com.example.mapsapp.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import com.example.mapsapp.ui.screens.MapsScreen
 
 @Composable
-fun MenuNavigationWrapper() {
-    val navController = rememberNavController()
-
-
+fun InternalNavigationWrapper(navController: NavHostController, padding: Modifier) {
+    NavHost(navController, Destinations.Map) {
+        composable<Destinations.Map>{
+            MapsScreen()
+        }
+    }
 }

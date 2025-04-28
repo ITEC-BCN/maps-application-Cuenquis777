@@ -20,20 +20,16 @@ fun MapsScreen(modifier: Modifier = Modifier) {
             position = CameraPosition.fromLatLngZoom(itb, 17f)
         }
         GoogleMap(
-            modifier = modifier.fillMaxSize(),
-            cameraPositionState = cameraPositionState,
-            onMapClick = { latLng ->
-                Log.d("MAP CLICKED", latLng.toString())
-            },
-            onMapLongClick = { latLng ->
-                Log.d("MAP CLICKED LONG", latLng.toString())
-            }
-        ) {
+            modifier.fillMaxSize(), cameraPositionState = cameraPositionState,
+            onMapClick = {
+                Log.d("MAP CLICKED", it.toString())
+            }, onMapLongClick = {
+                Log.d("MAP CLICKED LONG", it.toString())
+            }){
             Marker(
-                state = MarkerState(position = itb),
-                title = "ITB",
-                snippet = "Marker at ITB"
-            )
+                state = MarkerState(position = itb), title = "ITB",
+                snippet = "Marker at ITB")
         }
+
     }
 }
