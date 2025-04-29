@@ -12,19 +12,21 @@ sealed class Destinations {
     object Drawer : Destinations()
 
     @Serializable
-    object Map : Destinations()
+    object Map : Destinations() // Mapa principal
 
     @Serializable
-    object List : Destinations()
+    object List : Destinations() //Lista de puntos guardados
 
-/*
     @Serializable
-    data class MarkerCreation(val coordenades: LatLng)
+    object Camera : Destinations()
+
+    @Serializable
+    data class MarkerCreation(val latitud: Double, val longitud : Double) : Destinations()
 
     @Serializable
     data class MarkerDetails(val id: Int) : Destinations()
 
- */
+
 
 
 

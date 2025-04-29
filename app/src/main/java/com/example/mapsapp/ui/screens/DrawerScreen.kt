@@ -43,6 +43,7 @@ fun DrawerScreen() {
     var selectedItemIndex by remember { mutableIntStateOf(0) }
 
     ModalNavigationDrawer(
+        gesturesEnabled = false,
         drawerContent = {
             ModalDrawerSheet(
                 modifier = Modifier.width(300.dp)
