@@ -21,6 +21,9 @@ sealed class Destinations {
     object Camera : Destinations()
 
     @Serializable
+    data class Detail (val id: Int)
+
+    @Serializable
     data class MarkerCreation(val latitud: Double, val longitud : Double) : Destinations()
 
     @Serializable
