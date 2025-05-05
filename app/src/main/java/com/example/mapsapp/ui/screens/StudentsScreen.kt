@@ -1,4 +1,4 @@
-package com.example.supabasetest.ui.screens
+package com.example.mapsapp.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -26,8 +26,11 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mapsapp.viewmodels.MyViewModel
+import com.example.supabasetest.viewmodel.MyViewModel
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign

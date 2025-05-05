@@ -1,5 +1,8 @@
-package com.example.mapsapp.viewmodels
+package com.example.supabasetest.viewmodel
 
+import android.graphics.Bitmap
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.mapsapp.MyApp
@@ -8,6 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
 
 class MyViewModel: ViewModel() {
 
@@ -36,14 +40,8 @@ class MyViewModel: ViewModel() {
     fun insertNewStudent(name: String, mark: String) {
         val newStudent = Student(name = name, mark = mark.toDouble())
         CoroutineScope(Dispatchers.IO).launch {
-            database.insertStudent(newStudent)
+            database.insertStudent(name, mark.toDouble(), newStudent.toString())
             getAllStudents()
-        }
-    }
-
-    fun updateStudent(id: String, name: String, mark: String){
-        CoroutineScope(Dispatchers.IO).launch {
-            database.updateStudent(id, name, mark.toDouble())
         }
     }
 
@@ -74,4 +72,24 @@ class MyViewModel: ViewModel() {
     fun editStudentMark(mark: String) {
         _studentMark.value = mark
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun insertNewStudent(name: String, mark: String, image: Bitmap?) {
+        val stream = ByteArrayOutputStream()
+        image?.compress(Bitmap.CompressFormat.PNG, 0, stream)
+        CoroutineScope(Dispatchers.IO).launch {
+            val imageName = database.uploadImage(stream.toByteArray())
+            database.insertStudent(name, mark.toDouble(), imageName)
+        }
+    }
+
+    fun updateStudent(id: String, name: String, mark: String, image: Bitmap?){
+        val stream = ByteArrayOutputStream()
+        image?.compress(Bitmap.CompressFormat.PNG, 0, stream)
+        val imageName = _selectedStudent.value?.image?.removePrefix("https://aobflzinjcljzqpxpcxs.supabase.co/storage/v1/object/public/images/")
+        CoroutineScope(Dispatchers.IO).launch {
+            database.updateStudent(id, name, mark.toDouble(), imageName.toString(), stream.toByteArray())
+        }
+    }
+
 }

@@ -29,7 +29,6 @@ fun InternalNavigationWrapper(navController: NavHostController, padding: Modifie
 
         composable<Destinations.MarkerCreation> {
             CreateMarker()
-
         }
     }
 }

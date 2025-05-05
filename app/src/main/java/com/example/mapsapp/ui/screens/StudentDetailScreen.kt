@@ -12,26 +12,23 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mapsapp.viewmodels.MyViewModel
+import com.example.supabasetest.viewmodel.MyViewModel
 
+/*
 @Composable
 fun StudentDetailScreen(studentId: String, navigateBack: () -> Unit){
     val myViewModel = viewModel<MyViewModel>()
     myViewModel.getStudent(studentId)
     val studentName: String by myViewModel.studentName.observeAsState("")
     val studentMark: String by myViewModel.studentMark.observeAsState("")
-    Column(
-        Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
+    Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
         TextField(value = studentName, onValueChange = { myViewModel.editStudentName(it) })
         TextField(value = studentMark, onValueChange = { myViewModel.editStudentMark(it) })
         Button(onClick = {
             myViewModel.updateStudent(studentId, studentName, studentMark)
-            navigateBack()
-        }) {
+            navigateBack()}) {
             Text("Update")
         }
     }
 }
+ */
