@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 data class Student(
     val id: Int? = null,
     val name: String,
-    val mark: Double
+    val mark: Double,
+    val imageUrl: String
 )

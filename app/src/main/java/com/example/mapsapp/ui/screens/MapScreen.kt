@@ -1,11 +1,8 @@
 package com.example.mapsapp.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -23,7 +20,7 @@ fun MapsScreen(modifier: Modifier = Modifier, navigateToMaker: (Double, Double) 
         }
 
         GoogleMap(
-            modifier = modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
             onMapLongClick = {
                 navigateToMaker(it.latitude, it.longitude)

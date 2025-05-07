@@ -18,16 +18,16 @@ sealed class Destinations {
     object List : Destinations() //Lista de puntos guardados
 
     @Serializable
-    object Camera : Destinations()
+    object Camera : Destinations() //Pantalla de la cámara
 
     @Serializable
     data class Detail (val id: Int)
 
     @Serializable
-    data class MarkerCreation(val latitud: Double, val longitud : Double) : Destinations()
+    data class MarkerCreation(val latitud: Double, val longitud : Double) : Destinations() //Pantalla de creación de un marcador
 
     @Serializable
-    data class MarkerDetails(val id: Int) : Destinations()
+    data class MarkerDetails(val id: Int) : Destinations() //Pantalla de detalles de un marcador
 
 
 

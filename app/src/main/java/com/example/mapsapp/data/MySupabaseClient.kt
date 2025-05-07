@@ -43,7 +43,7 @@ class MySupabaseClient {
         }.decodeSingle<Student>()
     }
 
-    suspend fun insertStudent(name: String, student: Double, imageName1: String) {
+    suspend fun insertStudent(student: String, name: Double, mark: String) {
         client.from("Student").insert(student)
     }
 
@@ -60,9 +60,19 @@ class MySupabaseClient {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun uploadImage(imageFile: ByteArray): String {
+        val fechaHoraActual = LocalDateTime.now()
+        val formato = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")
+        val imageName = storage.from("images").upload(path = "image_${fechaHoraActual.format(formato)}.png", data = imageFile)
+        return buildImageUrl(imageFileName = imageName.path)
+    }
+
+    fun buildImageUrl(imageFileName: String) = "${this.supabaseUrl}/storage/v1/object/public/images/${imageFileName}"
+
 
     suspend fun deleteImage(imageName: String){
-        val imgName = imageName.removePrefix("https://aobflzinjcljzqpxpcxs.supabase.co/storage/v1/object/public/images/")
+        val imgName = imageName.removePrefix("https://luxphgkqoavsmerxhoka.supabase.co/storage/v1/object/public/images/")
         client.storage.from("images").delete(imgName)
     }
 
@@ -73,16 +83,4 @@ class MySupabaseClient {
             }
         }
     }
-
-
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun uploadImage(imageFile: ByteArray): String {
-        val fechaHoraActual = LocalDateTime.now()
-        val formato = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")
-        val imageName = storage.from("images").upload(path = "image_${fechaHoraActual.format(formato)}.png", data = imageFile)
-        return buildImageUrl(imageFileName = imageName.path)
-    }
-
-    fun buildImageUrl(imageFileName: String) = "${this.supabaseUrl}/storage/v1/object/public/images/${imageFileName}"
 }

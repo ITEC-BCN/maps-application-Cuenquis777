@@ -1,5 +1,7 @@
 package com.example.mapsapp.ui.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -26,11 +28,8 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.supabasetest.viewmodel.MyViewModel
+import com.example.mapsapp.viewmodels.MyViewModel
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -38,6 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mapsapp.data.Student
 
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun StudentsScreen(navigateToDetail: (String) -> Unit) {
     val myViewModel = viewModel<MyViewModel>()
@@ -58,7 +59,9 @@ fun StudentsScreen(navigateToDetail: (String) -> Unit) {
             Text("Create new student", fontSize = 28.sp, fontWeight = FontWeight.Bold)
             TextField(value = studentName, onValueChange = { myViewModel.editStudentName(it) })
             TextField(value = studentMark, onValueChange = { myViewModel.editStudentMark(it) })
-            Button(onClick = { myViewModel.insertNewStudent(studentName, studentMark) }) {
+            Button(onClick = {
+                myViewModel.insertNewStudent(studentName, studentMark, null)
+            }) {
                 Text("Insert")
             }
         }
@@ -78,7 +81,7 @@ fun StudentsScreen(navigateToDetail: (String) -> Unit) {
                 val dissmissState = rememberSwipeToDismissBoxState(
                     confirmValueChange = {
                         if (it == SwipeToDismissBoxValue.EndToStart) {
-                            myViewModel.deleteStudent(student.id.toString())
+                            myViewModel.deleteStudent(student.id.toString(), student.imageUrl)
                             true
                         } else {
                             false
@@ -107,7 +110,9 @@ fun StudentsScreen(navigateToDetail: (String) -> Unit) {
 fun StudentItem(student: Student, navigateToDetail: (String) -> Unit) {
     Box(
         modifier = Modifier
-            .fillMaxWidth().background(Color.LightGray).border(width = 2.dp, Color.DarkGray)
+            .fillMaxWidth()
+            .background(Color.LightGray)
+            .border(width = 2.dp, Color.DarkGray)
             .clickable { navigateToDetail(student.id.toString()) }) {
         Row(
             Modifier.fillMaxWidth(),
@@ -119,3 +124,5 @@ fun StudentItem(student: Student, navigateToDetail: (String) -> Unit) {
         }
     }
 }
+
+

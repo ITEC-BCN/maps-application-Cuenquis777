@@ -77,7 +77,6 @@ fun PermissionsScreen(navigateToDrawer: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black) //Fondo gris para que no se vean los permisos
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
