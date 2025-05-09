@@ -2,6 +2,7 @@ package com.example.mapsapp.viewmodels
 
 import android.graphics.Bitmap
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -53,10 +54,11 @@ class MyViewModel: ViewModel() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun insertNewStudent(name: String, mark: String, image: Bitmap?) {
-        val stream = ByteArrayOutputStream()
-        image?.compress(Bitmap.CompressFormat.PNG, 0, stream)
         CoroutineScope(Dispatchers.IO).launch {
+            val stream = ByteArrayOutputStream()
+            image?.compress(Bitmap.CompressFormat.PNG, 0, stream)
             val imageName = database.uploadImage(stream.toByteArray())
+            Log.d("MyViewModel", "Image name: $imageName")
             database.insertStudent(name, mark.toDouble(), imageName)
         }
     }

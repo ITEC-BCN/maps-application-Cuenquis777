@@ -1,6 +1,7 @@
 package com.example.mapsapp.data
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.mapsapp.BuildConfig
 import io.github.jan.supabase.SupabaseClient
@@ -43,7 +44,7 @@ class MySupabaseClient {
         }.decodeSingle<Student>()
     }
 
-    suspend fun insertStudent(student: String, name: Double, mark: String) {
+    suspend fun insertStudent(student: String, mar: Double, imageName1: String) {
         client.from("Student").insert(student)
     }
 
@@ -64,7 +65,9 @@ class MySupabaseClient {
     suspend fun uploadImage(imageFile: ByteArray): String {
         val fechaHoraActual = LocalDateTime.now()
         val formato = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")
+        Log.d("MySupabaseClient", "Aquí llego")
         val imageName = storage.from("images").upload(path = "image_${fechaHoraActual.format(formato)}.png", data = imageFile)
+        Log.d("MySupabaseClient", "Aquí llego")
         return buildImageUrl(imageFileName = imageName.path)
     }
 
