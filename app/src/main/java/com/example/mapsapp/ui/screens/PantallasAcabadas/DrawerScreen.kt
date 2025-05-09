@@ -1,6 +1,7 @@
-package com.example.mapsapp.ui.screens
+package com.example.mapsapp.ui.screens.PantallasAcabadas
 
-import androidx.compose.foundation.layout.height
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.*
@@ -34,6 +35,7 @@ enum class DrawerItem(
 }
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DrawerScreen() {

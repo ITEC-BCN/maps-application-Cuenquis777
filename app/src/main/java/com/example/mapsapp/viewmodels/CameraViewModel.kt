@@ -6,4 +6,8 @@ import androidx.lifecycle.ViewModel
 
 class CameraViewModel : ViewModel() {
     var capturedImage = mutableStateOf<Bitmap?>(null)
+
+    fun setImage(bitmap: Bitmap) {
+        capturedImage.value = bitmap
+    }
 }

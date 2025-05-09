@@ -32,25 +32,25 @@ class MySupabaseClient {
     }
 
 
-    suspend fun getAllStudents(): List<Student> {
-        return client.from("Student").select().decodeList<Student>()
+    suspend fun getAllStudents(): List<Marker> {
+        return client.from("Marker").select().decodeList<Marker>()
     }
 
-    suspend fun getStudent(id: String): Student {
-        return client.from("Student").select {
+    suspend fun getStudent(id: String): Marker {
+        return client.from("Marker").select {
             filter {
                 eq("id", id)
             }
-        }.decodeSingle<Student>()
+        }.decodeSingle<Marker>()
     }
 
-    suspend fun insertStudent(student: String, mar: Double, imageName1: String) {
-        client.from("Student").insert(student)
+    suspend fun insertStudent(marker: Marker) {
+        client.from("Marker").insert(marker)
     }
 
     suspend fun updateStudent(id: String, name: String, mark: Double, imageName: String, imageFile: ByteArray) {
         val imageName = storage.from("images").update(path = imageName, data = imageFile)
-        client.from("Student").update({
+        client.from("Marker").update({
             set("name", name)
             set("mark", mark)
             set("image", buildImageUrl(imageFileName = imageName.path))
@@ -65,9 +65,9 @@ class MySupabaseClient {
     suspend fun uploadImage(imageFile: ByteArray): String {
         val fechaHoraActual = LocalDateTime.now()
         val formato = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")
-        Log.d("MySupabaseClient", "Aquí llego")
+        Log.d("MySupabaseClient 1", "Aquí llego")
         val imageName = storage.from("images").upload(path = "image_${fechaHoraActual.format(formato)}.png", data = imageFile)
-        Log.d("MySupabaseClient", "Aquí llego")
+        Log.d("MySupabaseClient 2", "Aquí llego")
         return buildImageUrl(imageFileName = imageName.path)
     }
 
@@ -80,7 +80,7 @@ class MySupabaseClient {
     }
 
     suspend fun deleteStudent(id: String) {
-        client.from("Student").delete {
+        client.from("Marker").delete {
             filter {
                 eq("id", id)
             }

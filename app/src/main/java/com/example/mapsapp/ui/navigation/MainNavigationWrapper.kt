@@ -6,7 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.mapsapp.ui.navigation.Destinations.Drawer
 import com.example.mapsapp.ui.navigation.Destinations.Permissions
-import com.example.mapsapp.ui.screens.DrawerScreen
+import com.example.mapsapp.ui.screens.PantallasAcabadas.DrawerScreen
 import com.example.mapsapp.ui.screens.PermissionsScreen
 
 @Composable

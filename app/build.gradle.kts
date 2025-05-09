@@ -88,6 +88,9 @@ dependencies {
     implementation("io.ktor:ktor-client-android:3.1.2")
     implementation("io.github.jan-tennert.supabase:storage-kt:$3.1.4")
     implementation(libs.coil.compose)
+    implementation("io.github.jan-tennert.supabase:auth-kt:3.1.4")
+
+
 
 
 

@@ -35,14 +35,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.mapsapp.data.Student
+import com.example.mapsapp.data.Marker
 
-
+/*
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun StudentsScreen(navigateToDetail: (String) -> Unit) {
     val myViewModel = viewModel<MyViewModel>()
-    val studentsList by myViewModel.studentsList.observeAsState(emptyList<Student>())
+    val studentsList by myViewModel.studentsList.observeAsState(emptyList<Marker>())
     myViewModel.getAllStudents()
     val studentName: String by myViewModel.studentName.observeAsState("")
     val studentMark: String by myViewModel.studentMark.observeAsState("")
@@ -107,7 +107,7 @@ fun StudentsScreen(navigateToDetail: (String) -> Unit) {
 }
 
 @Composable
-fun StudentItem(student: Student, navigateToDetail: (String) -> Unit) {
+fun StudentItem(student: Marker, navigateToDetail: (String) -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -125,4 +125,4 @@ fun StudentItem(student: Student, navigateToDetail: (String) -> Unit) {
     }
 }
 
-
+ */

@@ -7,7 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.mapsapp.MyApp
-import com.example.mapsapp.data.Student
+import com.example.mapsapp.data.Marker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,10 +19,10 @@ class MyViewModel: ViewModel() {
     val database = MyApp.database
 
 
-    private val _studentsList = MutableLiveData<List<Student>>()
+    private val _studentsList = MutableLiveData<List<Marker>>()
     val studentsList = _studentsList
 
-    private var _selectedStudent: Student? = null
+    private var _selectedStudent: Marker? = null
 
     private val _studentName = MutableLiveData<String>()
     val studentName = _studentName
@@ -42,11 +42,11 @@ class MyViewModel: ViewModel() {
     fun getStudent(id: String){
         if(_selectedStudent == null){
             CoroutineScope(Dispatchers.IO).launch {
-                val student = database.getStudent(id)
+                val marker = database.getStudent(id)
                 withContext(Dispatchers.Main) {
-                    _selectedStudent = student
-                    _studentName.value = student.name
-                    _studentMark.value = student.mark.toString()
+                    _selectedStudent = marker
+                    _studentName.value = marker.name
+                    _studentMark.value = marker.mark.toString()
                 }
             }
         }
@@ -57,9 +57,10 @@ class MyViewModel: ViewModel() {
         CoroutineScope(Dispatchers.IO).launch {
             val stream = ByteArrayOutputStream()
             image?.compress(Bitmap.CompressFormat.PNG, 0, stream)
+
             val imageName = database.uploadImage(stream.toByteArray())
             Log.d("MyViewModel", "Image name: $imageName")
-            database.insertStudent(name, mark.toDouble(), imageName)
+            database.insertStudent(Marker(name = name, mark = mark, imageUrl = imageName))
         }
     }
 
@@ -80,9 +81,6 @@ class MyViewModel: ViewModel() {
             database.updateStudent(id, name, mark.toDouble(), imageName.toString(), stream.toByteArray())
         }
     }
-
-
-
 
     fun editStudentName(name: String) {
         _studentName.value = name

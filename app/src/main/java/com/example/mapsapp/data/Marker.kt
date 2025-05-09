@@ -3,9 +3,9 @@ package com.example.mapsapp.data
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Student(
-    val id: Int? = null,
+data class Marker(
+    val id: Int = 0,
     val name: String,
-    val mark: Double,
+    val mark: String,
     val imageUrl: String
 )
