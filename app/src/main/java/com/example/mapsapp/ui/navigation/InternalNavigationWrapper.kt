@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.mapsapp.ui.screens.CreateMarker
 import com.example.mapsapp.ui.screens.MapsScreen
+import com.example.mapsapp.ui.screens.MarkerDetailScreen
 import com.example.mapsapp.ui.screens.MarkerList
 import com.example.mapsapp.viewmodels.CameraViewModel
 import com.example.mapsapp.viewmodels.MyViewModel
@@ -30,17 +31,27 @@ fun InternalNavigationWrapper(navController: NavHostController, padding: Modifie
         }
 
         composable<Destinations.List> {
-            MarkerList()
+            MarkerList(
+                myViewModel = MyViewModel(),
+                modifier = padding,
+                navigateToCreateMarker = {
+                    id -> navController.navigate(Destinations.MarkerDetails(id))}
+            )
+        }
+
+        composable<Destinations.MarkerDetails> { backStackEnrty ->
+            val id = backStackEnrty.arguments?.getInt("id") ?: 0
+            MarkerDetailScreen(
+                markerId = id,
+                navigateBack = { navController.navigate(Destinations.List) },
+            )
         }
 
         composable<Destinations.MarkerCreation> {
             CreateMarker(
-                image = cameraViewModel.capturedImage.value,
-                navigateToMap = { navController.navigate(Destinations.Map) },
+                navigateToBack = { navController.navigate(Destinations.Map) },
                 viewModel = MyViewModel()
             )
         }
-
-
     }
 }

@@ -32,15 +32,13 @@ import java.io.File
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CreateMarker(
-    navigateToMap: () -> Unit,
-    image: Bitmap?, // este ya no se usa
+    navigateToBack: () -> Unit,
     viewModel: MyViewModel = viewModel()
 ) {
     var name by remember { mutableStateOf(TextFieldValue("")) }
     var mark by remember { mutableStateOf(TextFieldValue("")) }
     val cameraViewModel: CameraViewModel = viewModel()
     val context = LocalContext.current
-
     var showDialog by remember { mutableStateOf(false) }
     val imageUri = remember { mutableStateOf<Uri?>(null) }
 
@@ -116,22 +114,25 @@ fun CreateMarker(
                 singleLine = true
             )
 
-            // Imagen capturada o icono de cámara
-            cameraViewModel.capturedImage.value?.let { captured ->
+            // Mostrar imagen capturada o ícono de cámara si no hay imagen
+            if (cameraViewModel.capturedImage.value != null) {
+                val capturedImage = cameraViewModel.capturedImage.value!!
                 Image(
-                    bitmap = captured.asImageBitmap(),
+                    bitmap = capturedImage.asImageBitmap(),
                     contentDescription = "Imagen capturada",
                     modifier = Modifier
                         .size(128.dp)
                         .clickable { showDialog = true }
                 )
-            } ?: Image(
-                painter = painterResource(id = R.drawable.camera),
-                contentDescription = "Icono cámara",
-                modifier = Modifier
-                    .size(64.dp)
-                    .clickable { showDialog = true }
-            )
+            } else {
+                Image(
+                    painter = painterResource(id = R.drawable.camera),
+                    contentDescription = "Icono de cámara",
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clickable { showDialog = true }
+                )
+            }
 
             Button(onClick = {
                 viewModel.insertNewStudent(
@@ -139,7 +140,7 @@ fun CreateMarker(
                     mark = mark.text,
                     image = cameraViewModel.capturedImage.value
                 )
-                navigateToMap()
+                navigateToBack()
             }) {
                 Text("Añadir")
             }

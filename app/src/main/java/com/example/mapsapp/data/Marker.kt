@@ -7,5 +7,5 @@ data class Marker(
     val id: Int = 0,
     val name: String,
     val mark: String,
-    val imageUrl: String
+    val imageUrl: String?
 )

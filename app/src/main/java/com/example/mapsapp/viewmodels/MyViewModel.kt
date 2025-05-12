@@ -19,10 +19,13 @@ class MyViewModel: ViewModel() {
     val database = MyApp.database
 
 
-    private val _studentsList = MutableLiveData<List<Marker>>()
-    val studentsList = _studentsList
+    private val _markersList = MutableLiveData<List<Marker>>()
+    val markersList = _markersList
 
     private var _selectedStudent: Marker? = null
+
+    private val _loading = MutableLiveData(true)
+    val loading = _loading
 
     private val _studentName = MutableLiveData<String>()
     val studentName = _studentName
@@ -30,23 +33,30 @@ class MyViewModel: ViewModel() {
     private val _studentMark = MutableLiveData<String>()
     val studentMark = _studentMark
 
-    fun getAllStudents() {
+    val _studentImageUrl = MutableLiveData<String?>()
+    val studentImageUrl = _studentImageUrl
+
+
+    fun getAllMarkers() {
         CoroutineScope(Dispatchers.IO).launch {
-            val databaseStudents = database.getAllStudents()
+            val databaseStudents = database.getAllMarkers()
             withContext(Dispatchers.Main) {
-                _studentsList.value = databaseStudents
+                _markersList.value = databaseStudents
+                _loading.value = false
+
             }
         }
     }
 
-    fun getStudent(id: String){
-        if(_selectedStudent == null){
+    fun getMarker(id: Int) {
+        if (_selectedStudent == null) {
             CoroutineScope(Dispatchers.IO).launch {
                 val marker = database.getStudent(id)
                 withContext(Dispatchers.Main) {
                     _selectedStudent = marker
                     _studentName.value = marker.name
-                    _studentMark.value = marker.mark.toString()
+                    _studentMark.value = marker.mark
+                    _studentImageUrl.value = marker.imageUrl
                 }
             }
         }
@@ -64,21 +74,22 @@ class MyViewModel: ViewModel() {
         }
     }
 
-    fun deleteStudent(id: String, image: String){
+    fun deleteStudent(id: Int, image: String){
         CoroutineScope(Dispatchers.IO).launch {
             database.deleteImage(image)
             database.deleteStudent(id)
-            getAllStudents()
+            getAllMarkers()
         }
     }
 
 
-    fun updateStudent(id: String, name: String, mark: String, image: Bitmap?){
+    fun updateMarker(name: String, mark: String, image: Bitmap?){
         val stream = ByteArrayOutputStream()
         image?.compress(Bitmap.CompressFormat.PNG, 0, stream)
+        Log.d("Marc", "es null? ${image == null}")
         val imageName = _selectedStudent?.imageUrl?.removePrefix("https://luxphgkqoavsmerxhoka.supabase.co/storage/v1/object/public/images/")
         CoroutineScope(Dispatchers.IO).launch {
-            database.updateStudent(id, name, mark.toDouble(), imageName.toString(), stream.toByteArray())
+            database.updateMarker(name, mark, imageName.toString(), stream.toByteArray())
         }
     }
 

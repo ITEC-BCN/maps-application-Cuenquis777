@@ -1,5 +1,6 @@
 package com.example.mapsapp.data
 
+import android.R.attr.id
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -32,11 +33,12 @@ class MySupabaseClient {
     }
 
 
-    suspend fun getAllStudents(): List<Marker> {
+    suspend fun getAllMarkers(): List<Marker> {
         return client.from("Marker").select().decodeList<Marker>()
     }
 
-    suspend fun getStudent(id: String): Marker {
+    suspend fun getStudent(id: Int): Marker {
+        Log.d("MySupabaseClient", "ID: $id")
         return client.from("Marker").select {
             filter {
                 eq("id", id)
@@ -48,7 +50,8 @@ class MySupabaseClient {
         client.from("Marker").insert(marker)
     }
 
-    suspend fun updateStudent(id: String, name: String, mark: Double, imageName: String, imageFile: ByteArray) {
+    suspend fun updateMarker(name: String, mark: String, imageName: String, imageFile: ByteArray) {
+        Log.d("Marc", "tamaño de imagenFile ${imageFile.size}")
         val imageName = storage.from("images").update(path = imageName, data = imageFile)
         client.from("Marker").update({
             set("name", name)
@@ -79,7 +82,7 @@ class MySupabaseClient {
         client.storage.from("images").delete(imgName)
     }
 
-    suspend fun deleteStudent(id: String) {
+    suspend fun deleteStudent(id: Int) {
         client.from("Marker").delete {
             filter {
                 eq("id", id)
