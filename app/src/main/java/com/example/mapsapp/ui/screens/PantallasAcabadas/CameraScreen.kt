@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import androidx.core.graphics.scale
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mapsapp.viewmodels.CameraViewModel
-import com.example.mapsapp.viewmodels.MyViewModel
+import com.example.mapsapp.viewmodels.ViewModelMap.CameraViewModel
+import com.example.mapsapp.viewmodels.ViewModelMap.MyViewModel
 import java.io.File
 
 @Composable

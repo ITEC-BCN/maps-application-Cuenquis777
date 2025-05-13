@@ -1,5 +1,5 @@
 package com.example.mapsapp.ui.screens
-
+/*
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -28,7 +28,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mapsapp.viewmodels.MyViewModel
+import com.example.mapsapp.viewmodels.ViewModelMap.MyViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -37,17 +37,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mapsapp.data.Marker
 
-/*
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun StudentsScreen(navigateToDetail: (String) -> Unit) {
+
     val myViewModel = viewModel<MyViewModel>()
-    val studentsList by myViewModel.studentsList.observeAsState(emptyList<Marker>())
-    myViewModel.getAllStudents()
-    val studentName: String by myViewModel.studentName.observeAsState("")
-    val studentMark: String by myViewModel.studentMark.observeAsState("")
+
+    val markerList by myViewModel.markersList.observeAsState(emptyList<Marker>())
+
+    val markerName: String by myViewModel.studentName.observeAsState("")
+    val markerMark: String by myViewModel.studentMark.observeAsState("")
+
+    myViewModel.getAllMarkers()
+
     Column(
-        Modifier.fillMaxSize()
+            Modifier.fillMaxSize()
     ) {
         Column(
             Modifier
@@ -57,10 +62,13 @@ fun StudentsScreen(navigateToDetail: (String) -> Unit) {
             verticalArrangement = Arrangement.Center
         ) {
             Text("Create new student", fontSize = 28.sp, fontWeight = FontWeight.Bold)
-            TextField(value = studentName, onValueChange = { myViewModel.editStudentName(it) })
-            TextField(value = studentMark, onValueChange = { myViewModel.editStudentMark(it) })
+
+            TextField(value = markerName, onValueChange = { myViewModel.editStudentName(it) })
+            TextField(value = markerMark, onValueChange = { myViewModel.editStudentMark(it) })
+
+
             Button(onClick = {
-                myViewModel.insertNewStudent(studentName, studentMark, null)
+                myViewModel.insertNewStudent(markerName, markerMark,)
             }) {
                 Text("Insert")
             }
@@ -77,11 +85,11 @@ fun StudentsScreen(navigateToDetail: (String) -> Unit) {
                 .fillMaxWidth()
                 .weight(0.6f)
         ) {
-            items(studentsList) { student ->
+            items(markerList) { marker ->
                 val dissmissState = rememberSwipeToDismissBoxState(
                     confirmValueChange = {
                         if (it == SwipeToDismissBoxValue.EndToStart) {
-                            myViewModel.deleteStudent(student.id.toString(), student.imageUrl)
+                            myViewModel.deleteStudent(marker.id)
                             true
                         } else {
                             false
@@ -99,7 +107,7 @@ fun StudentsScreen(navigateToDetail: (String) -> Unit) {
                         Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete")
                     }
                 }) {
-                    StudentItem(student) { navigateToDetail(student.id.toString()) }
+                    StudentItem(marker) { navigateToDetail(marker.id) }
                 }
             }
         }
@@ -126,3 +134,5 @@ fun StudentItem(student: Marker, navigateToDetail: (String) -> Unit) {
 }
 
  */
+
+

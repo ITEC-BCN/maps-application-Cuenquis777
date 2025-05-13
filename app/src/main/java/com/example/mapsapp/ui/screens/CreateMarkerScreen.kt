@@ -1,7 +1,6 @@
 package com.example.mapsapp.ui.screens
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
@@ -25,22 +24,28 @@ import androidx.core.content.FileProvider
 import androidx.core.graphics.scale
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mapsapp.R
-import com.example.mapsapp.viewmodels.CameraViewModel
-import com.example.mapsapp.viewmodels.MyViewModel
+import com.example.mapsapp.viewmodels.ViewModelMap.CameraViewModel
+import com.example.mapsapp.viewmodels.ViewModelMap.MyViewModel
 import java.io.File
+import kotlin.text.toFloat
+import kotlin.text.toInt
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CreateMarker(
+    latitude: Double,
+    longitude: Double,
     navigateToBack: () -> Unit,
     viewModel: MyViewModel = viewModel()
 ) {
+    val cameraViewModel: CameraViewModel = viewModel()
+
     var name by remember { mutableStateOf(TextFieldValue("")) }
     var mark by remember { mutableStateOf(TextFieldValue("")) }
-    val cameraViewModel: CameraViewModel = viewModel()
-    val context = LocalContext.current
     var showDialog by remember { mutableStateOf(false) }
     val imageUri = remember { mutableStateOf<Uri?>(null) }
+
+    val context = LocalContext.current
 
     val takePictureLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
@@ -133,12 +138,13 @@ fun CreateMarker(
                         .clickable { showDialog = true }
                 )
             }
-
             Button(onClick = {
                 viewModel.insertNewStudent(
                     name = name.text,
                     mark = mark.text,
-                    image = cameraViewModel.capturedImage.value
+                    image = cameraViewModel.capturedImage.value,
+                    latitude = latitude,
+                    longitude = longitude
                 )
                 navigateToBack()
             }) {

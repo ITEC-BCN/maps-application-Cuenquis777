@@ -1,4 +1,4 @@
-package com.example.mapsapp.viewmodels
+package com.example.mapsapp.viewmodels.ViewModelMap
 
 import android.graphics.Bitmap
 import androidx.compose.runtime.mutableStateOf

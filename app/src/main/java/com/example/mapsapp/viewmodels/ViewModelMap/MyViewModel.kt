@@ -1,4 +1,4 @@
-package com.example.mapsapp.viewmodels
+package com.example.mapsapp.viewmodels.ViewModelMap
 
 import android.graphics.Bitmap
 import android.os.Build
@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 
-class MyViewModel: ViewModel() {
+class MyViewModel : ViewModel() {
 
     val database = MyApp.database
 
@@ -63,18 +63,32 @@ class MyViewModel: ViewModel() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun insertNewStudent(name: String, mark: String, image: Bitmap?) {
+    fun insertNewStudent(
+        name: String,
+        mark: String,
+        image: Bitmap?,
+        latitude: Double,
+        longitude: Double
+    ) {
         CoroutineScope(Dispatchers.IO).launch {
             val stream = ByteArrayOutputStream()
             image?.compress(Bitmap.CompressFormat.PNG, 0, stream)
 
             val imageName = database.uploadImage(stream.toByteArray())
             Log.d("MyViewModel", "Image name: $imageName")
-            database.insertStudent(Marker(name = name, mark = mark, imageUrl = imageName))
+            database.insertStudent(
+                Marker(
+                    name = name,
+                    mark = mark,
+                    imageUrl = imageName,
+                    latitude = latitude,
+                    longitude = longitude
+                )
+            )
         }
     }
 
-    fun deleteStudent(id: Int, image: String){
+    fun deleteStudent(id: Int, image: String) {
         CoroutineScope(Dispatchers.IO).launch {
             database.deleteImage(image)
             database.deleteStudent(id)
@@ -83,11 +97,12 @@ class MyViewModel: ViewModel() {
     }
 
 
-    fun updateMarker(name: String, mark: String, image: Bitmap?){
+    fun updateMarker(name: String, mark: String, image: Bitmap?) {
         val stream = ByteArrayOutputStream()
         image?.compress(Bitmap.CompressFormat.PNG, 0, stream)
         Log.d("Marc", "es null? ${image == null}")
-        val imageName = _selectedStudent?.imageUrl?.removePrefix("https://luxphgkqoavsmerxhoka.supabase.co/storage/v1/object/public/images/")
+        val imageName =
+            _selectedStudent?.imageUrl?.removePrefix("https://luxphgkqoavsmerxhoka.supabase.co/storage/v1/object/public/images/")
         CoroutineScope(Dispatchers.IO).launch {
             database.updateMarker(name, mark, imageName.toString(), stream.toByteArray())
         }
@@ -100,4 +115,6 @@ class MyViewModel: ViewModel() {
     fun editStudentMark(mark: String) {
         _studentMark.value = mark
     }
+
+
 }

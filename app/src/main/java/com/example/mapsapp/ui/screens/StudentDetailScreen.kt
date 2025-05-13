@@ -21,7 +21,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mapsapp.viewmodels.MyViewModel
+import com.example.mapsapp.viewmodels.ViewModelMap.MyViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,14 +33,12 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.scale
 import coil.compose.AsyncImage
 import com.example.mapsapp.R
-import com.example.mapsapp.viewmodels.CameraViewModel
+import com.example.mapsapp.viewmodels.ViewModelMap.CameraViewModel
 
 
 @Composable
 fun MarkerDetailScreen(markerId: Int, navigateBack: () -> Unit) {
     val myViewModel = viewModel<MyViewModel>()
-
-    myViewModel.getMarker(markerId)
 
     val markerName: String by myViewModel.studentName.observeAsState("")
     val markerMark: String by myViewModel.studentMark.observeAsState("")
@@ -49,6 +47,7 @@ fun MarkerDetailScreen(markerId: Int, navigateBack: () -> Unit) {
     val imageUri = remember { mutableStateOf<Uri?>(null) }
     val context = LocalContext.current
 
+    myViewModel.getMarker(markerId)
 
     Column(
         Modifier.fillMaxSize(),
@@ -118,7 +117,6 @@ fun MarkerDetailScreen(markerId: Int, navigateBack: () -> Unit) {
                     .clickable { showDialog = true }
             )
         } else if (!imageUrl.isNullOrEmpty()) {
-            // Imagen desde red
             AsyncImage(
                 model = imageUrl,
                 contentDescription = "Imagen guardada",
@@ -140,7 +138,7 @@ fun MarkerDetailScreen(markerId: Int, navigateBack: () -> Unit) {
             myViewModel.updateMarker(
                 name = markerName,
                 mark = markerMark,
-                image = cameraViewModel.capturedImage.value //Could not find the 'image' column of 'Marker' in the schema cache
+                image = cameraViewModel.capturedImage.value
             )
             Log.d( "MarkerDetailScreen", "Updating marker with id: $markerId")
             Log.d( "MarkerDetailScreen", "Name: $markerName $markerMark")

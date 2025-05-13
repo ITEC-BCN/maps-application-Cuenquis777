@@ -56,7 +56,7 @@ class MySupabaseClient {
         client.from("Marker").update({
             set("name", name)
             set("mark", mark)
-            set("image", buildImageUrl(imageFileName = imageName.path))
+            set("imageUrl", buildImageUrl(imageFileName = imageName.path))
         }) {
             filter {
                 eq("id", id)
