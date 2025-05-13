@@ -41,12 +41,11 @@ fun InternalNavigationWrapper(navController: NavHostController, padding: Modifie
                     )
                 }
             )
-            navController.popBackStack(Destinations.List, inclusive = false)
         }
 
 
-        composable<Destinations.MarkerDetails> { backStackEnrty ->
-            val id = backStackEnrty.arguments?.getInt("id") ?: 0
+        composable<Destinations.MarkerDetails> { backStackEntry ->
+            val id = backStackEntry.arguments?.getInt("id") ?: 0
             MarkerDetailScreen(
                 markerId = id,
                 navigateBack = { navController.navigate(Destinations.List) },
