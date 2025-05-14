@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import com.example.mapsapp.viewmodels.ViewModelMap.MyViewModel
+import com.example.mapsapp.viewmodels.ViewModelMap.ViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -18,7 +18,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 fun MapsScreen(
     modifier: Modifier = Modifier,
     navigateToMaker: (Double, Double) -> Unit,
-    myViewModel: MyViewModel
+    myViewModel: ViewModel
 ) {
     val markers = myViewModel.markersList.observeAsState(emptyList())
 

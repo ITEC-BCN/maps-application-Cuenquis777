@@ -5,7 +5,12 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.mapsapp.BuildConfig
+import com.example.mapsapp.utils.AuthState
 import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.auth
+import io.github.jan.supabase.auth.providers.builtin.Email
+import io.github.jan.supabase.auth.user.UserSession
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
@@ -14,24 +19,68 @@ import io.github.jan.supabase.storage.storage
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-
-class MySupabaseClient {
+class SupabaseAuthentication {
 
     lateinit var storage: Storage
     lateinit var client: SupabaseClient
 
     private val supabaseUrl = BuildConfig.SUPABASE_URL
     private val supabaseKey = BuildConfig.SUPABASE_KEY
-
+    
 
     constructor() {
         client = createSupabaseClient(supabaseUrl = supabaseUrl, supabaseKey = supabaseKey) {
             install(Postgrest)
             install(Storage)
+            install(Auth) {
+                autoLoadFromStorage = true
+            }
         }
         storage = client.storage
     }
 
+
+    //funció per fer el registre d’un usuari
+    suspend fun signUpWithEmail(emailValue: String, passwordValue: String): AuthState {
+        try {
+            client.auth.signUpWith(Email) {
+                email = emailValue
+                password = passwordValue
+            }
+            return AuthState.Authenticated
+        } catch (e: Exception) {
+            return AuthState.Error(e.localizedMessage)
+        }
+    }
+
+    //funció per fer el login d’un usuari
+    suspend fun signInWithEmail(emailValue: String, passwordValue: String): AuthState {
+        try {
+            client.auth.signInWith(Email) {
+                email = emailValue
+                password = passwordValue
+            }
+            return AuthState.Authenticated
+        } catch (e: Exception) {
+            return AuthState.Error(e.localizedMessage)
+        }
+    }
+
+    //funció que s’encarregarà de retornar-nos la les dades de l’usuari actual, si n’hi ha
+    fun retrieveCurrentSession(): UserSession? {
+        val session = client.auth.currentSessionOrNull()
+        return session
+    }
+
+    // funció que actualitzarà la sessió activa
+    fun refreshSession(): AuthState {
+        try {
+            client.auth.currentSessionOrNull()
+            return AuthState.Authenticated
+        } catch (e: Exception) {
+            return AuthState.Error(e.localizedMessage)
+        }
+    }
 
     suspend fun getAllMarkers(): List<Marker> {
         return client.from("Marker").select().decodeList<Marker>()

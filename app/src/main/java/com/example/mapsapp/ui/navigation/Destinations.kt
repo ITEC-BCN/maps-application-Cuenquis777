@@ -23,6 +23,14 @@ sealed class Destinations {
     @Serializable
     data class MarkerDetails(val id: Int) : Destinations() //Pantalla de detalles de un marcador
 
+    @Serializable
+    object Login : Destinations() //Pantalla de login
+
+    @Serializable
+    object Register : Destinations() //Pantalla de registro
+
+    @Serializable
+    object Home : Destinations() //Pantalla de inicio
 
 
 

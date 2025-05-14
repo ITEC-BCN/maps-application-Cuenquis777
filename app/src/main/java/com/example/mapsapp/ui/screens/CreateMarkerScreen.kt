@@ -25,10 +25,8 @@ import androidx.core.graphics.scale
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mapsapp.R
 import com.example.mapsapp.viewmodels.ViewModelMap.CameraViewModel
-import com.example.mapsapp.viewmodels.ViewModelMap.MyViewModel
+import com.example.mapsapp.viewmodels.ViewModelMap.ViewModel
 import java.io.File
-import kotlin.text.toFloat
-import kotlin.text.toInt
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -36,7 +34,7 @@ fun CreateMarker(
     latitude: Double,
     longitude: Double,
     navigateToBack: () -> Unit,
-    viewModel: MyViewModel = viewModel()
+    viewModel: ViewModel = viewModel()
 ) {
     val cameraViewModel: CameraViewModel = viewModel()
 

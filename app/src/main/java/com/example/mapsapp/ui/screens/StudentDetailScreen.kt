@@ -21,7 +21,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mapsapp.viewmodels.ViewModelMap.MyViewModel
+import com.example.mapsapp.viewmodels.ViewModelMap.ViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,7 +38,7 @@ import com.example.mapsapp.viewmodels.ViewModelMap.CameraViewModel
 
 @Composable
 fun MarkerDetailScreen(markerId: Int, navigateBack: () -> Unit) {
-    val myViewModel = viewModel<MyViewModel>()
+    val myViewModel = viewModel<ViewModel>()
 
     val markerName: String by myViewModel.studentName.observeAsState("")
     val markerMark: String by myViewModel.studentMark.observeAsState("")
@@ -135,18 +135,26 @@ fun MarkerDetailScreen(markerId: Int, navigateBack: () -> Unit) {
         }
 
         Button(onClick = {
+            myViewModel.deleteMark(
+                id = markerId,
+                image = imageUrl.toString()
+            )
+            navigateBack()
+        }) {
+            Text("Delete")
+        }
+
+        Button(onClick = {
             myViewModel.updateMarker(
                 name = markerName,
                 mark = markerMark,
                 image = cameraViewModel.capturedImage.value
             )
-            Log.d( "MarkerDetailScreen", "Updating marker with id: $markerId")
-            Log.d( "MarkerDetailScreen", "Name: $markerName $markerMark")
+            Log.d("MarkerDetailScreen", "Updating marker with id: $markerId")
+            Log.d("MarkerDetailScreen", "Name: $markerName $markerMark")
             navigateBack()
         }) {
             Text("Update")
         }
     }
 }
-
-

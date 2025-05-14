@@ -6,19 +6,42 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.mapsapp.MyApp
+import androidx.lifecycle.viewModelScope
+import com.example.mapsapp.SupabaseApplication
 import com.example.mapsapp.data.Marker
+import com.example.mapsapp.utils.AuthState
+import com.example.mapsapp.utils.SharedPreferencesHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 
-class MyViewModel : ViewModel() {
+class ViewModel(private val sharedPreferences: SharedPreferencesHelper) : ViewModel() {
 
-    val database = MyApp.database
+    //Variables para la base de datos
+    val database = SupabaseApplication.auth
+    private val authManager = SupabaseApplication.auth
 
 
+    //Variables para auth
+    private val _email = MutableLiveData<String>()
+    val email = _email
+
+    private val _password = MutableLiveData<String>()
+    val password = _password
+
+    private val _authState = MutableLiveData<AuthState>()
+    val authState = _authState
+
+    private val _showError = MutableLiveData<Boolean>(false)
+    val showError = _showError
+
+    private val _user = MutableLiveData<String?>()
+    val user = _user
+
+
+    //Varibles para mapa
     private val _markersList = MutableLiveData<List<Marker>>()
     val markersList = _markersList
 
@@ -35,6 +58,11 @@ class MyViewModel : ViewModel() {
 
     val _studentImageUrl = MutableLiveData<String?>()
     val studentImageUrl = _studentImageUrl
+
+
+    init {
+        checkExistingSession()
+    }
 
 
     fun getAllMarkers() {
@@ -88,7 +116,7 @@ class MyViewModel : ViewModel() {
         }
     }
 
-    fun deleteStudent(id: Int, image: String) {
+    fun deleteMark(id: Int, image: String) {
         CoroutineScope(Dispatchers.IO).launch {
             database.deleteImage(image)
             database.deleteStudent(id)
@@ -116,5 +144,80 @@ class MyViewModel : ViewModel() {
         _studentMark.value = mark
     }
 
+
+
+    fun editEmail(value: String) {
+        _email.value = value
+    }
+
+    fun editPassword(value: String) {
+        _password.value = value
+    }
+
+
+    private fun checkExistingSession() {
+        viewModelScope.launch {
+            val accessToken = sharedPreferences.getAccessToken()
+            val refreshToken = sharedPreferences.getRefreshToken()
+            when {
+                !accessToken.isNullOrEmpty() -> refreshToken()
+                !refreshToken.isNullOrEmpty() -> refreshToken()
+                else -> _authState.value = AuthState.Unauthenticated
+            }
+        }
+    }
+
+    fun signUp() {
+        viewModelScope.launch {
+            _authState.value = authManager.signUpWithEmail(_email.value!!, _password.value!!)
+            if (_authState.value is AuthState.Error) {
+                _showError.value = true
+            } else {
+                val session = authManager.retrieveCurrentSession()
+                sharedPreferences.saveAuthData(
+                    session!!.accessToken,
+                    session.refreshToken
+                )
+            }
+        }
+    }
+
+    fun signIn() {
+        viewModelScope.launch {
+            _authState.value = authManager.signInWithEmail(_email.value!!, _password.value!!)
+            if (_authState.value is AuthState.Error) {
+                _showError.value = true
+            } else {
+                val session = authManager.retrieveCurrentSession()
+                sharedPreferences.saveAuthData(
+                    session!!.accessToken,
+                    session.refreshToken
+                )
+            }
+        }
+    }
+
+    private fun refreshToken() {
+        viewModelScope.launch {
+            try {
+                authManager.refreshSession()
+                _authState.value = AuthState.Authenticated
+            } catch (e: Exception) {
+                sharedPreferences.clear()
+                _authState.value = AuthState.Unauthenticated
+            }
+        }
+    }
+
+    fun errorMessageShowed(){
+        _showError.value = false
+    }
+
+    fun logout() {
+        viewModelScope.launch {
+            sharedPreferences.clear()
+            _authState.value = AuthState.Unauthenticated
+        }
+    }
 
 }

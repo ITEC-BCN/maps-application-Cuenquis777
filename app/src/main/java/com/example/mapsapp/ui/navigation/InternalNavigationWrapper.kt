@@ -11,7 +11,8 @@ import com.example.mapsapp.ui.screens.CreateMarker
 import com.example.mapsapp.ui.screens.MapsScreen
 import com.example.mapsapp.ui.screens.MarkerDetailScreen
 import com.example.mapsapp.ui.screens.MarkerList
-import com.example.mapsapp.viewmodels.ViewModelMap.MyViewModel
+import com.example.mapsapp.utils.SharedPreferencesHelper
+import com.example.mapsapp.viewmodels.ViewModelMap.ViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -24,24 +25,23 @@ fun InternalNavigationWrapper(navController: NavHostController, padding: Modifie
                 navigateToMaker = { latitud, longitud ->
                     navController.navigate(Destinations.MarkerCreation(latitud, longitud))
                 },
-                myViewModel = MyViewModel()
+                myViewModel = ViewModel(
+                    sharedPreferences = SharedPreferencesHelper(navController.context)
+                )
             )
-            
+
         }
 
         composable<Destinations.List> {
             MarkerList(
-                myViewModel = MyViewModel(),
+                myViewModel = ViewModel(
+                    sharedPreferences = SharedPreferencesHelper(navController.context)
+                ),
                 modifier = padding,
-                navigateToCreateMarker = { id ->
-                    navController.navigate(
-                        Destinations.MarkerDetails(
-                            id
-                        )
-                    )
+                navigateToDetail = { id ->
+                    navController.navigate(Destinations.MarkerDetails(id))
                 }
             )
-            navController.popBackStack(Destinations.List, inclusive = false)
         }
 
 
@@ -61,8 +61,12 @@ fun InternalNavigationWrapper(navController: NavHostController, padding: Modifie
                 latitude = latitude,
                 longitude = longitude,
                 navigateToBack = { navController.navigate(Destinations.Map) },
-                viewModel = MyViewModel()
+                viewModel = ViewModel(
+                    sharedPreferences = SharedPreferencesHelper(navController.context)
+                )
             )
         }
+
+
     }
 }
