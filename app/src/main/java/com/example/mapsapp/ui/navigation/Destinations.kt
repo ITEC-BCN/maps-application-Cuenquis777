@@ -4,12 +4,20 @@ import com.google.android.gms.maps.model.LatLng
 import kotlinx.serialization.Serializable
 
 sealed class Destinations {
+    @Serializable
+    object Login : Destinations() //Pantalla de login
 
     @Serializable
-    object Permissions : Destinations()
+    object Register : Destinations() //Pantalla de registro
 
     @Serializable
-    object Drawer : Destinations()
+    object Home : Destinations() //Pantalla de inicio
+
+    @Serializable
+    object Permissions : Destinations() //Pantalla de permisos
+
+    @Serializable
+    object Drawer : Destinations() //Pantalla de drawer
 
     @Serializable
     object Map : Destinations() // Mapa principal
@@ -22,16 +30,6 @@ sealed class Destinations {
 
     @Serializable
     data class MarkerDetails(val id: Int) : Destinations() //Pantalla de detalles de un marcador
-
-    @Serializable
-    object Login : Destinations() //Pantalla de login
-
-    @Serializable
-    object Register : Destinations() //Pantalla de registro
-
-    @Serializable
-    object Home : Destinations() //Pantalla de inicio
-
 
 
 

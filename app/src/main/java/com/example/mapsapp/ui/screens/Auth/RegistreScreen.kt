@@ -1,5 +1,6 @@
 package com.example.mapsapp.ui.screens.Auth
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,19 +37,30 @@ fun RegistreScreen(
     val viewModel: ViewModel =
         viewModel(factory = AuthViewModelFactory(SharedPreferencesHelper(context)))
 
-    val authState = viewModel.authState.observeAsState()
-    val showError = viewModel.showError.observeAsState()
+    val authState by viewModel.authState.observeAsState()
+    val showError by viewModel.showError.observeAsState()
+    val refresh by viewModel.refresh.observeAsState(false)
 
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    val email by viewModel.email.observeAsState("")
+    val password by viewModel.password.observeAsState("")
 
-    if (authState == AuthState.Authenticated) {
-        navigateToHome()
-    } else {
-        if (showError.value == true) {
+    Log.d("MAVOI", authState.toString())
+    Log.d("MAVOI", (authState == AuthState.Authenticated).toString())
+
+    if(refresh){
+        viewModel.refresh.value = false
+        Toast.makeText(context, "User created", Toast.LENGTH_LONG).show()
+    }
+
+    if (authState != AuthState.Authenticated) {
+        if (showError == true) {
             val errorMessage = (authState as AuthState.Error).message
             if (errorMessage!!.contains("weak_password")) {
-                Toast.makeText(context, "Password should be at least 6 characters", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    context,
+                    "Password should be at least 6 characters",
+                    Toast.LENGTH_LONG
+                ).show()
             } else {
                 Toast.makeText(context, "An error has occurred", Toast.LENGTH_LONG).show()
             }
@@ -64,14 +76,14 @@ fun RegistreScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Login",
+                text = "Register",
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
             BasicTextField(
                 value = email,
-                onValueChange = { email = it },
+                onValueChange = { viewModel.editEmail(it) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
@@ -89,7 +101,7 @@ fun RegistreScreen(
 
             BasicTextField(
                 value = password,
-                onValueChange = { password = it },
+                onValueChange = { viewModel.editPassword(it) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
@@ -108,14 +120,14 @@ fun RegistreScreen(
 
             Button(
                 onClick = {
-                    viewModel.editEmail(email)
-                    viewModel.editPassword(password)
-                    viewModel.signIn()
+                    viewModel.signUp()
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth ()
             ) {
-                Text("Login")
+                Text("Register")
             }
         }
+    } else {
+        navigateToHome()
     }
 }

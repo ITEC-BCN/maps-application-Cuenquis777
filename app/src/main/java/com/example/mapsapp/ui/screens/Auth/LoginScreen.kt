@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mapsapp.AuthViewModelFactory
-import com.example.mapsapp.utils.AuthState
 import com.example.mapsapp.utils.SharedPreferencesHelper
 import com.example.mapsapp.viewmodels.ViewModelMap.ViewModel
 import androidx.compose.foundation.layout.*
@@ -13,26 +12,27 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.example.mapsapp.utils.AuthState
 
 @Composable
 fun LoginScreen(
-
     navigateToHome: () -> Unit,
+    navigateToRegister: () -> Unit
 ) {
     val context = LocalContext.current
     val viewModel: ViewModel = viewModel(factory = AuthViewModelFactory(SharedPreferencesHelper(context)))
 
     val authState = viewModel.authState.observeAsState()
     val showError = viewModel.showError.observeAsState()
-
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    val email by viewModel.email.observeAsState("")
+    val password by viewModel.password.observeAsState("")
 
     if (authState == AuthState.Authenticated) {
         navigateToHome()
@@ -63,7 +63,7 @@ fun LoginScreen(
 
             BasicTextField(
                 value = email,
-                onValueChange = { email = it },
+                onValueChange = { viewModel.editEmail(it) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
@@ -81,7 +81,7 @@ fun LoginScreen(
 
             BasicTextField(
                 value = password,
-                onValueChange = { password = it },
+                onValueChange = { viewModel.editPassword(it) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
@@ -107,6 +107,9 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Login")
+            }
+            TextButton(onClick = {navigateToRegister()}) {
+                Text("Don't have an account? Register")
             }
         }
     }

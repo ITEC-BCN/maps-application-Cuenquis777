@@ -66,7 +66,5 @@ fun InternalNavigationWrapper(navController: NavHostController, padding: Modifie
                 )
             )
         }
-
-
     }
 }

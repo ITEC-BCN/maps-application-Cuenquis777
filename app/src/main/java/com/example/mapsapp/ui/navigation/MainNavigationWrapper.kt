@@ -7,8 +7,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.mapsapp.ui.navigation.Destinations.Drawer
+import com.example.mapsapp.ui.navigation.Destinations.Login
 import com.example.mapsapp.ui.navigation.Destinations.Permissions
 import com.example.mapsapp.ui.screens.Auth.LoginScreen
+import com.example.mapsapp.ui.screens.Auth.RegistreScreen
 import com.example.mapsapp.ui.screens.PantallasAcabadas.DrawerScreen
 import com.example.mapsapp.ui.screens.PermissionsScreen
 
@@ -19,35 +21,33 @@ fun MainNavigationWrapper() {
     NavHost(navController, Permissions) {
         composable<Permissions> {
             PermissionsScreen {
-                navController.navigate(Destinations.Register)
+                navController.navigate(Login)
             }
         }
 
-        composable<Destinations.Login> {
+        composable<Login> {
             LoginScreen(
                 navigateToHome = {
-                    navController.navigate(Destinations.Map) {
-                        popUpTo(Destinations.Login) {
-                            inclusive = true
-                        }
+                    navController.navigate(Drawer) {
+
                     }
                 },
+                navigateToRegister = {
+                    navController.navigate(Destinations.Register) {
+
+                    }
+                }
             )
         }
 
         composable<Destinations.Register> {
-            LoginScreen(
+            RegistreScreen(
                 navigateToHome = {
-                    navController.navigate(Destinations.Map) {
-                        popUpTo(Destinations.Register) {
-                            inclusive = true
-                        }
+                    navController.navigate(Drawer) {
                     }
                 },
             )
         }
-
-
 
         composable<Drawer> {
             DrawerScreen()

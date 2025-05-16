@@ -21,7 +21,6 @@ class ViewModel(private val sharedPreferences: SharedPreferencesHelper) : ViewMo
 
     //Variables para la base de datos
     val database = SupabaseApplication.auth
-    private val authManager = SupabaseApplication.auth
 
 
     //Variables para auth
@@ -39,6 +38,9 @@ class ViewModel(private val sharedPreferences: SharedPreferencesHelper) : ViewMo
 
     private val _user = MutableLiveData<String?>()
     val user = _user
+
+    private val _refresh = MutableLiveData<Boolean>(false)
+    val refresh = _refresh
 
 
     //Varibles para mapa
@@ -169,26 +171,29 @@ class ViewModel(private val sharedPreferences: SharedPreferencesHelper) : ViewMo
 
     fun signUp() {
         viewModelScope.launch {
-            _authState.value = authManager.signUpWithEmail(_email.value!!, _password.value!!)
+            _authState.value = database.signUpWithEmail(_email.value!!, _password.value!!)
             if (_authState.value is AuthState.Error) {
+                Log.d("MAVOI VIEW MODEL ERROR", _authState.value.toString())
                 _showError.value = true
             } else {
-                val session = authManager.retrieveCurrentSession()
+                Log.d("MAVOI VIEW MODEL", _authState.value.toString())
+                val session = database.retrieveCurrentSession()
                 sharedPreferences.saveAuthData(
                     session!!.accessToken,
                     session.refreshToken
                 )
             }
+            _refresh.value = true
         }
     }
 
     fun signIn() {
         viewModelScope.launch {
-            _authState.value = authManager.signInWithEmail(_email.value!!, _password.value!!)
+            _authState.value = database.signInWithEmail(_email.value!!, _password.value!!)
             if (_authState.value is AuthState.Error) {
                 _showError.value = true
             } else {
-                val session = authManager.retrieveCurrentSession()
+                val session = database.retrieveCurrentSession()
                 sharedPreferences.saveAuthData(
                     session!!.accessToken,
                     session.refreshToken
@@ -200,7 +205,7 @@ class ViewModel(private val sharedPreferences: SharedPreferencesHelper) : ViewMo
     private fun refreshToken() {
         viewModelScope.launch {
             try {
-                authManager.refreshSession()
+                database.refreshSession()
                 _authState.value = AuthState.Authenticated
             } catch (e: Exception) {
                 sharedPreferences.clear()

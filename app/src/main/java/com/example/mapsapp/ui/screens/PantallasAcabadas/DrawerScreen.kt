@@ -23,6 +23,8 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.ui.unit.dp
 import com.example.mapsapp.ui.navigation.InternalNavigationWrapper
+import com.example.mapsapp.utils.SharedPreferencesHelper
+import com.example.mapsapp.viewmodels.ViewModelMap.ViewModel
 import kotlinx.coroutines.launch
 
 enum class DrawerItem(
@@ -84,7 +86,9 @@ fun DrawerScreen() {
                 )
             }
         ) { innerPadding ->
-            InternalNavigationWrapper(navController, Modifier.padding(innerPadding))
+            InternalNavigationWrapper(
+                navController, Modifier.padding(innerPadding)
+            )
         }
     }
 }
