@@ -29,15 +29,15 @@ fun LoginScreen(
     val context = LocalContext.current
     val viewModel: ViewModel = viewModel(factory = AuthViewModelFactory(SharedPreferencesHelper(context)))
 
-    val authState = viewModel.authState.observeAsState()
-    val showError = viewModel.showError.observeAsState()
+    val authState by viewModel.authState.observeAsState()
+    val showError by viewModel.showError.observeAsState()
     val email by viewModel.email.observeAsState("")
     val password by viewModel.password.observeAsState("")
 
     if (authState == AuthState.Authenticated) {
         navigateToHome()
     } else {
-        if (showError.value == true) {
+        if (showError == true) {
             val errorMessage = (authState as AuthState.Error).message
             if (errorMessage!!.contains("invalid_credentials")) {
                 Toast.makeText(context, "Invalid credentials", Toast.LENGTH_LONG).show()
