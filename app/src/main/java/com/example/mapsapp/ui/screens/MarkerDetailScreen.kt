@@ -32,13 +32,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.scale
 import coil.compose.AsyncImage
+import com.example.mapsapp.AuthViewModelFactory
 import com.example.mapsapp.R
+import com.example.mapsapp.utils.SharedPreferencesHelper
 import com.example.mapsapp.viewmodels.ViewModelMap.CameraViewModel
 
 
 @Composable
 fun MarkerDetailScreen(markerId: Int, navigateBack: () -> Unit) {
-    val myViewModel = viewModel<ViewModel>()
+
+    val factory = AuthViewModelFactory(
+        SharedPreferencesHelper(LocalContext.current)
+    )
+
+    val myViewModel: ViewModel = viewModel(factory = factory)
 
     val markerName: String by myViewModel.studentName.observeAsState("")
     val markerMark: String by myViewModel.studentMark.observeAsState("")

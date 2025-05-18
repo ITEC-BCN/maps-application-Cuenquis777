@@ -13,12 +13,15 @@ import com.example.mapsapp.ui.screens.Auth.LoginScreen
 import com.example.mapsapp.ui.screens.Auth.RegistreScreen
 import com.example.mapsapp.ui.screens.PantallasAcabadas.DrawerScreen
 import com.example.mapsapp.ui.screens.PermissionsScreen
+import com.example.mapsapp.utils.SharedPreferencesHelper
+import com.example.mapsapp.viewmodels.ViewModelMap.ViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainNavigationWrapper() {
     val navController = rememberNavController()
     NavHost(navController, Permissions) {
+
         composable<Permissions> {
             PermissionsScreen {
                 navController.navigate(Login)
@@ -50,7 +53,18 @@ fun MainNavigationWrapper() {
         }
 
         composable<Drawer> {
-            DrawerScreen()
+            DrawerScreen(
+                logout = {
+                    navController.navigate(Login) {
+                        popUpTo(Login) { inclusive = true }
+                    }
+                },
+
+                viewModel =ViewModel(
+                    sharedPreferences = SharedPreferencesHelper(navController.context)
+                )
+            )
+
         }
     }
 }

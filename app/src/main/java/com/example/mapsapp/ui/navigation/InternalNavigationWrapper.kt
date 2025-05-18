@@ -19,6 +19,7 @@ import com.example.mapsapp.viewmodels.ViewModelMap.ViewModel
 fun InternalNavigationWrapper(navController: NavHostController, padding: Modifier) {
 
     NavHost(navController, Destinations.Map) {
+
         composable<Destinations.Map> {
             MapsScreen(
                 modifier = padding,

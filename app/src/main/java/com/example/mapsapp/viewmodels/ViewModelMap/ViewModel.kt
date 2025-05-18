@@ -47,7 +47,7 @@ class ViewModel(private val sharedPreferences: SharedPreferencesHelper) : ViewMo
     private val _markersList = MutableLiveData<List<Marker>>()
     val markersList = _markersList
 
-    private var _selectedStudent: Marker? = null
+    private var _selectedMarker: Marker? = null
 
     private val _loading = MutableLiveData(true)
     val loading = _loading
@@ -79,11 +79,11 @@ class ViewModel(private val sharedPreferences: SharedPreferencesHelper) : ViewMo
     }
 
     fun getMarker(id: Int) {
-        if (_selectedStudent == null) {
+        if (_selectedMarker == null) {
             CoroutineScope(Dispatchers.IO).launch {
                 val marker = database.getStudent(id)
                 withContext(Dispatchers.Main) {
-                    _selectedStudent = marker
+                    _selectedMarker = marker
                     _studentName.value = marker.name
                     _studentMark.value = marker.mark
                     _studentImageUrl.value = marker.imageUrl
@@ -127,14 +127,35 @@ class ViewModel(private val sharedPreferences: SharedPreferencesHelper) : ViewMo
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun updateMarker(name: String, mark: String, image: Bitmap?) {
         val stream = ByteArrayOutputStream()
         image?.compress(Bitmap.CompressFormat.PNG, 0, stream)
         Log.d("Marc", "es null? ${image == null}")
-        val imageName =
-            _selectedStudent?.imageUrl?.removePrefix("https://luxphgkqoavsmerxhoka.supabase.co/storage/v1/object/public/images/")
+        val baseUrl = "https://luxphgkqoavsmerxhoka.supabase.co/storage/v1/object/public/images/"
+
         CoroutineScope(Dispatchers.IO).launch {
-            database.updateMarker(name, mark, imageName.toString(), stream.toByteArray())
+            //Eliminar el marcador existente
+            _selectedMarker?.let { marker ->
+                database.deleteStudent(marker.id)
+                marker.imageUrl?.let { database.deleteImage(it) }
+            }
+
+            //Subir la nueva imagen
+            val newImageName = database.uploadImage(stream.toByteArray())
+            val newImageUrl = "$baseUrl$newImageName"
+
+            //Agregar el marcador actualizado
+            database.insertStudent(
+                Marker(
+                    id = _selectedMarker?.id ?: 0,
+                    name = name,
+                    mark = mark,
+                    imageUrl = newImageUrl,
+                    latitude = _selectedMarker?.latitude ?: 0.0,
+                    longitude = _selectedMarker?.longitude ?: 0.0
+                )
+            )
         }
     }
 
@@ -147,7 +168,7 @@ class ViewModel(private val sharedPreferences: SharedPreferencesHelper) : ViewMo
     }
 
 
-
+    //Verificacion
     fun editEmail(value: String) {
         _email.value = value
     }
@@ -224,5 +245,4 @@ class ViewModel(private val sharedPreferences: SharedPreferencesHelper) : ViewMo
             _authState.value = AuthState.Unauthenticated
         }
     }
-
 }
