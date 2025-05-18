@@ -1,6 +1,5 @@
 package com.example.mapsapp.data
 
-import android.R.attr.id
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -86,7 +85,7 @@ class SupabaseAuthentication {
         return client.from("Marker").select().decodeList<Marker>()
     }
 
-    suspend fun getStudent(id: Int): Marker {
+    suspend fun getMarker(id: Int): Marker {
         Log.d("MySupabaseClient", "ID: $id")
         return client.from("Marker").select {
             filter {
@@ -95,23 +94,10 @@ class SupabaseAuthentication {
         }.decodeSingle<Marker>()
     }
 
-    suspend fun insertStudent(marker: Marker) {
+    suspend fun insertMarker(marker: Marker) {
         client.from("Marker").insert(marker)
     }
 
-    suspend fun updateMarker(name: String, mark: String, imageName: String, imageFile: ByteArray) {
-        Log.d("Marc", "tamaño de imagenFile ${imageFile.size}")
-        val imageName = storage.from("images").update(path = imageName, data = imageFile)
-        client.from("Marker").update({
-            set("name", name)
-            set("mark", mark)
-            set("imageUrl", buildImageUrl(imageFileName = imageName.path))
-        }) {
-            filter {
-                eq("id", id)
-            }
-        }
-    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun uploadImage(imageFile: ByteArray): String {
@@ -131,7 +117,7 @@ class SupabaseAuthentication {
         client.storage.from("images").delete(imgName)
     }
 
-    suspend fun deleteStudent(id: Int) {
+    suspend fun deleteMarker(id: Int) {
         client.from("Marker").delete {
             filter {
                 eq("id", id)

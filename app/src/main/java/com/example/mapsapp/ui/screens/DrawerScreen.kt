@@ -1,4 +1,4 @@
-package com.example.mapsapp.ui.screens.PantallasAcabadas
+package com.example.mapsapp.ui.screens
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -25,14 +25,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import com.example.mapsapp.ui.navigation.DrawerItem
 import com.example.mapsapp.ui.navigation.InternalNavigationWrapper
-import com.example.mapsapp.viewmodels.ViewModelMap.ViewModel
+import com.example.mapsapp.viewmodels.ViewModelMap.AuthViewModel
 import kotlinx.coroutines.launch
 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DrawerScreen(logout: () -> Unit, viewModel: ViewModel) {
+fun DrawerScreen(logout: () -> Unit, viewModel: AuthViewModel) {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -84,7 +84,7 @@ fun DrawerScreen(logout: () -> Unit, viewModel: ViewModel) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Awesome App") },
+                    title = { Text("Map") },
                     navigationIcon = {
                         IconButton(onClick = { scope.launch { drawerState.open() } }) {
                             Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")

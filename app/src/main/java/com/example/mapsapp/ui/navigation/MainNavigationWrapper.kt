@@ -11,10 +11,10 @@ import com.example.mapsapp.ui.navigation.Destinations.Login
 import com.example.mapsapp.ui.navigation.Destinations.Permissions
 import com.example.mapsapp.ui.screens.Auth.LoginScreen
 import com.example.mapsapp.ui.screens.Auth.RegistreScreen
-import com.example.mapsapp.ui.screens.PantallasAcabadas.DrawerScreen
+import com.example.mapsapp.ui.screens.DrawerScreen
 import com.example.mapsapp.ui.screens.PermissionsScreen
 import com.example.mapsapp.utils.SharedPreferencesHelper
-import com.example.mapsapp.viewmodels.ViewModelMap.ViewModel
+import com.example.mapsapp.viewmodels.ViewModelMap.AuthViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -49,6 +49,11 @@ fun MainNavigationWrapper() {
                     navController.navigate(Drawer) {
                     }
                 },
+                navigateToLogin = {
+                    navController.navigate(Login) {
+                        popUpTo<Login> { inclusive = true }
+                    }
+                }
             )
         }
 
@@ -60,7 +65,7 @@ fun MainNavigationWrapper() {
                     }
                 },
 
-                viewModel =ViewModel(
+                viewModel =AuthViewModel(
                     sharedPreferences = SharedPreferencesHelper(navController.context)
                 )
             )

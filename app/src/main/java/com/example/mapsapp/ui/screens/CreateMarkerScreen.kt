@@ -23,9 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import androidx.core.graphics.scale
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mapsapp.AuthViewModelFactory
 import com.example.mapsapp.R
+import com.example.mapsapp.utils.SharedPreferencesHelper
 import com.example.mapsapp.viewmodels.ViewModelMap.CameraViewModel
-import com.example.mapsapp.viewmodels.ViewModelMap.ViewModel
+import com.example.mapsapp.viewmodels.ViewModelMap.AuthViewModel
 import java.io.File
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -34,16 +36,16 @@ fun CreateMarker(
     latitude: Double,
     longitude: Double,
     navigateToBack: () -> Unit,
-    viewModel: ViewModel = viewModel()
 ) {
-    val cameraViewModel: CameraViewModel = viewModel()
+    val context = LocalContext.current
+    val viewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(SharedPreferencesHelper(context)))
 
+    val cameraViewModel: CameraViewModel = viewModel()
     var name by remember { mutableStateOf(TextFieldValue("")) }
     var mark by remember { mutableStateOf(TextFieldValue("")) }
     var showDialog by remember { mutableStateOf(false) }
     val imageUri = remember { mutableStateOf<Uri?>(null) }
 
-    val context = LocalContext.current
 
     val takePictureLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
@@ -137,7 +139,7 @@ fun CreateMarker(
                 )
             }
             Button(onClick = {
-                viewModel.insertNewStudent(
+                viewModel.insertNewMarker(
                     name = name.text,
                     mark = mark.text,
                     image = cameraViewModel.capturedImage.value,

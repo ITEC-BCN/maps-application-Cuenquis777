@@ -6,7 +6,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import com.example.mapsapp.viewmodels.ViewModelMap.ViewModel
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mapsapp.AuthViewModelFactory
+import com.example.mapsapp.utils.SharedPreferencesHelper
+import com.example.mapsapp.viewmodels.ViewModelMap.AuthViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -18,12 +22,13 @@ import com.google.maps.android.compose.rememberCameraPositionState
 fun MapsScreen(
     modifier: Modifier = Modifier,
     navigateToMaker: (Double, Double) -> Unit,
-    myViewModel: ViewModel
 ) {
-    val markers = myViewModel.markersList.observeAsState(emptyList())
+    val context = LocalContext.current
+    val viewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(SharedPreferencesHelper(context)))
+    val markers = viewModel.markersList.observeAsState(emptyList())
 
     LaunchedEffect(Unit) {
-        myViewModel.getAllMarkers()
+        viewModel.getAllMarkers()
     }
 
     Column(modifier.fillMaxSize()) {

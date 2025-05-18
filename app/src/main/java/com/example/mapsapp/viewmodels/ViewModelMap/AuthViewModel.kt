@@ -17,7 +17,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 
-class ViewModel(private val sharedPreferences: SharedPreferencesHelper) : ViewModel() {
+
+
+
+class AuthViewModel(private val sharedPreferences: SharedPreferencesHelper) : ViewModel() {
 
     //Variables para la base de datos
     val database = SupabaseApplication.auth
@@ -39,9 +42,6 @@ class ViewModel(private val sharedPreferences: SharedPreferencesHelper) : ViewMo
     private val _user = MutableLiveData<String?>()
     val user = _user
 
-    private val _refresh = MutableLiveData<Boolean>(false)
-    val refresh = _refresh
-
 
     //Varibles para mapa
     private val _markersList = MutableLiveData<List<Marker>>()
@@ -52,14 +52,14 @@ class ViewModel(private val sharedPreferences: SharedPreferencesHelper) : ViewMo
     private val _loading = MutableLiveData(true)
     val loading = _loading
 
-    private val _studentName = MutableLiveData<String>()
-    val studentName = _studentName
+    private val _markerName = MutableLiveData<String>()
+    val markerName = _markerName
 
-    private val _studentMark = MutableLiveData<String>()
-    val studentMark = _studentMark
+    private val _markerMark = MutableLiveData<String>()
+    val markerMark = _markerMark
 
-    val _studentImageUrl = MutableLiveData<String?>()
-    val studentImageUrl = _studentImageUrl
+    val _markerImageUrl = MutableLiveData<String?>()
+    val markerImageUrl = _markerImageUrl
 
 
     init {
@@ -73,7 +73,6 @@ class ViewModel(private val sharedPreferences: SharedPreferencesHelper) : ViewMo
             withContext(Dispatchers.Main) {
                 _markersList.value = databaseStudents
                 _loading.value = false
-
             }
         }
     }
@@ -81,19 +80,19 @@ class ViewModel(private val sharedPreferences: SharedPreferencesHelper) : ViewMo
     fun getMarker(id: Int) {
         if (_selectedMarker == null) {
             CoroutineScope(Dispatchers.IO).launch {
-                val marker = database.getStudent(id)
+                val marker = database.getMarker(id)
                 withContext(Dispatchers.Main) {
                     _selectedMarker = marker
-                    _studentName.value = marker.name
-                    _studentMark.value = marker.mark
-                    _studentImageUrl.value = marker.imageUrl
+                    _markerName.value = marker?.name
+                    _markerMark.value = marker?.mark
+                    _markerImageUrl.value = marker?.imageUrl
                 }
             }
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun insertNewStudent(
+    fun insertNewMarker(
         name: String,
         mark: String,
         image: Bitmap?,
@@ -106,13 +105,13 @@ class ViewModel(private val sharedPreferences: SharedPreferencesHelper) : ViewMo
 
             val imageName = database.uploadImage(stream.toByteArray())
             Log.d("MyViewModel", "Image name: $imageName")
-            database.insertStudent(
+            database.insertMarker(
                 Marker(
                     name = name,
                     mark = mark,
                     imageUrl = imageName,
                     latitude = latitude,
-                    longitude = longitude
+                    longitude = longitude,
                 )
             )
         }
@@ -121,32 +120,30 @@ class ViewModel(private val sharedPreferences: SharedPreferencesHelper) : ViewMo
     fun deleteMark(id: Int, image: String) {
         CoroutineScope(Dispatchers.IO).launch {
             database.deleteImage(image)
-            database.deleteStudent(id)
+            database.deleteMarker(id)
             getAllMarkers()
         }
     }
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun updateMarker(name: String, mark: String, image: Bitmap?) {
+    fun updateMarker(name: String, mark: String, image: Bitmap?, onComplete: (() -> Unit)? = null) {
         val stream = ByteArrayOutputStream()
         image?.compress(Bitmap.CompressFormat.PNG, 0, stream)
         Log.d("Marc", "es null? ${image == null}")
-        val baseUrl = "https://luxphgkqoavsmerxhoka.supabase.co/storage/v1/object/public/images/"
 
         CoroutineScope(Dispatchers.IO).launch {
-            //Eliminar el marcador existente
+            // Eliminar el marcador existente
             _selectedMarker?.let { marker ->
-                database.deleteStudent(marker.id)
+                database.deleteMarker(marker.id)
                 marker.imageUrl?.let { database.deleteImage(it) }
             }
 
-            //Subir la nueva imagen
-            val newImageName = database.uploadImage(stream.toByteArray())
-            val newImageUrl = "$baseUrl$newImageName"
+            // Subir la nueva imagen
+            val newImageUrl = database.uploadImage(stream.toByteArray())
 
-            //Agregar el marcador actualizado
-            database.insertStudent(
+            // Agregar el marcador actualizado
+            database.insertMarker(
                 Marker(
                     id = _selectedMarker?.id ?: 0,
                     name = name,
@@ -159,12 +156,13 @@ class ViewModel(private val sharedPreferences: SharedPreferencesHelper) : ViewMo
         }
     }
 
-    fun editStudentName(name: String) {
-        _studentName.value = name
-    }
 
     fun editStudentMark(mark: String) {
-        _studentMark.value = mark
+        _markerMark.value = mark
+    }
+
+    fun editStudentName(name: String) {
+        _markerName.value = name
     }
 
 
@@ -204,7 +202,6 @@ class ViewModel(private val sharedPreferences: SharedPreferencesHelper) : ViewMo
                     session.refreshToken
                 )
             }
-            _refresh.value = true
         }
     }
 
@@ -235,7 +232,7 @@ class ViewModel(private val sharedPreferences: SharedPreferencesHelper) : ViewMo
         }
     }
 
-    fun errorMessageShowed(){
+    fun errorMessageShowed() {
         _showError.value = false
     }
 

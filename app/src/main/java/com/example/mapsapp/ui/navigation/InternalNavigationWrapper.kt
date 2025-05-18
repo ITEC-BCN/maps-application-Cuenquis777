@@ -4,15 +4,17 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.mapsapp.ui.screens.CreateMarker
 import com.example.mapsapp.ui.screens.MapsScreen
 import com.example.mapsapp.ui.screens.MarkerDetailScreen
+import com.example.mapsapp.ui.screens.MarkerEditScreen
 import com.example.mapsapp.ui.screens.MarkerList
 import com.example.mapsapp.utils.SharedPreferencesHelper
-import com.example.mapsapp.viewmodels.ViewModelMap.ViewModel
+import com.example.mapsapp.viewmodels.ViewModelMap.AuthViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -26,18 +28,11 @@ fun InternalNavigationWrapper(navController: NavHostController, padding: Modifie
                 navigateToMaker = { latitud, longitud ->
                     navController.navigate(Destinations.MarkerCreation(latitud, longitud))
                 },
-                myViewModel = ViewModel(
-                    sharedPreferences = SharedPreferencesHelper(navController.context)
-                )
             )
-
         }
 
         composable<Destinations.List> {
             MarkerList(
-                myViewModel = ViewModel(
-                    sharedPreferences = SharedPreferencesHelper(navController.context)
-                ),
                 modifier = padding,
                 navigateToDetail = { id ->
                     navController.navigate(Destinations.MarkerDetails(id))
@@ -51,6 +46,17 @@ fun InternalNavigationWrapper(navController: NavHostController, padding: Modifie
             MarkerDetailScreen(
                 markerId = id,
                 navigateBack = { navController.navigate(Destinations.List) },
+                navigateToEdit = { id ->
+                    navController.navigate(Destinations.MarkerEdit(id))
+                },
+            )
+        }
+
+        composable<Destinations.MarkerEdit> { backStackEntry ->
+            val id = backStackEntry.arguments?.getInt("id") ?: 0
+            MarkerEditScreen(
+                markerId = id,
+                navigateBack = { navController.navigate(Destinations.List) },
             )
         }
 
@@ -62,9 +68,6 @@ fun InternalNavigationWrapper(navController: NavHostController, padding: Modifie
                 latitude = latitude,
                 longitude = longitude,
                 navigateToBack = { navController.navigate(Destinations.Map) },
-                viewModel = ViewModel(
-                    sharedPreferences = SharedPreferencesHelper(navController.context)
-                )
             )
         }
     }

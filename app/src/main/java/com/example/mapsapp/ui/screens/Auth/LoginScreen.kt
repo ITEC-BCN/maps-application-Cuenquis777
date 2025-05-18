@@ -6,7 +6,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mapsapp.AuthViewModelFactory
 import com.example.mapsapp.utils.SharedPreferencesHelper
-import com.example.mapsapp.viewmodels.ViewModelMap.ViewModel
+import com.example.mapsapp.viewmodels.ViewModelMap.AuthViewModel
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
@@ -17,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.mapsapp.utils.AuthState
@@ -27,7 +28,7 @@ fun LoginScreen(
     navigateToRegister: () -> Unit
 ) {
     val context = LocalContext.current
-    val viewModel: ViewModel = viewModel(factory = AuthViewModelFactory(SharedPreferencesHelper(context)))
+    val viewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(SharedPreferencesHelper(context)))
 
     val authState by viewModel.authState.observeAsState()
     val showError by viewModel.showError.observeAsState()
@@ -58,7 +59,9 @@ fun LoginScreen(
             Text(
                 text = "Login",
                 style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier.padding(bottom = 16.dp),
+                fontWeight = FontWeight.Bold
+
             )
 
             BasicTextField(
@@ -109,7 +112,7 @@ fun LoginScreen(
                 Text("Login")
             }
             TextButton(onClick = {navigateToRegister()}) {
-                Text("Don't have an account? Register")
+                Text("No tienes cuenta? Registrate")
             }
         }
     }

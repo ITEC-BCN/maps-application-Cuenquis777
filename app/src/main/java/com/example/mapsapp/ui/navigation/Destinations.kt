@@ -10,8 +10,6 @@ sealed class Destinations {
     @Serializable
     object Register : Destinations() //Pantalla de registro
 
-    @Serializable
-    object Home : Destinations() //Pantalla de inicio
 
     @Serializable
     object Permissions : Destinations() //Pantalla de permisos
@@ -30,6 +28,9 @@ sealed class Destinations {
 
     @Serializable
     data class MarkerDetails(val id: Int) : Destinations() //Pantalla de detalles de un marcador
+
+    @Serializable
+    data class MarkerEdit(val id: Int) : Destinations() //Pantalla de edición de un marcador
 
 
 

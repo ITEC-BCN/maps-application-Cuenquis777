@@ -15,25 +15,33 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.mapsapp.data.Marker
-import com.example.mapsapp.viewmodels.ViewModelMap.ViewModel
+import com.example.mapsapp.viewmodels.ViewModelMap.AuthViewModel
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.rememberSwipeToDismissBoxState
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mapsapp.AuthViewModelFactory
+import com.example.mapsapp.utils.SharedPreferencesHelper
 
 @Composable
 fun MarkerList(
-    myViewModel: ViewModel,
     modifier: Modifier,
     navigateToDetail: (Int) -> Unit
 ) {
-    val showLoading: Boolean by myViewModel.loading.observeAsState(true)
-    val markers by myViewModel.markersList.observeAsState(emptyList())
+    val context = LocalContext.current
+    val viewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(SharedPreferencesHelper(context)))
 
-    myViewModel.getAllMarkers()
+    val showLoading: Boolean by viewModel.loading.observeAsState(true)
+    val markers by viewModel.markersList.observeAsState(emptyList())
+
+    LaunchedEffect(Unit) {
+        viewModel.getAllMarkers()
+    }
 
     if (showLoading) {
         Column(
@@ -68,7 +76,7 @@ fun MarkerList(
 
                         LaunchedEffect(dismissState.currentValue) {
                             if (dismissState.currentValue == SwipeToDismissBoxValue.EndToStart) {
-                                myViewModel.deleteMark(marker.id, image = marker.imageUrl.toString())
+                                viewModel.deleteMark(marker.id, image = marker.imageUrl.toString())
                             }
                         }
 
