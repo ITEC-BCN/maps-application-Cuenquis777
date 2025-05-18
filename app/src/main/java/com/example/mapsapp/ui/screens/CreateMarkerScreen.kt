@@ -13,6 +13,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
@@ -41,12 +42,12 @@ fun CreateMarker(
     val viewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(SharedPreferencesHelper(context)))
 
     val cameraViewModel: CameraViewModel = viewModel()
-    var name by remember { mutableStateOf(TextFieldValue("")) }
-    var mark by remember { mutableStateOf(TextFieldValue("")) }
+    val name by viewModel.markerName.observeAsState("")
+    val mark by viewModel.markerMark.observeAsState("")
     var showDialog by remember { mutableStateOf(false) }
     val imageUri = remember { mutableStateOf<Uri?>(null) }
 
-
+    //estado de la imagen capturada
     val takePictureLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
             if (success) {
@@ -71,6 +72,7 @@ fun CreateMarker(
             }
         }
 
+    // Mostrar el diálogo para elegir entre tomar una foto o elegir de la galería
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
@@ -97,6 +99,7 @@ fun CreateMarker(
         )
     }
 
+    // Mostrar la interfaz de usuario para crear un nuevo marcador
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -108,13 +111,13 @@ fun CreateMarker(
         ) {
             TextField(
                 value = name,
-                onValueChange = { name = it },
+                onValueChange = { viewModel.markerName.value = it },
                 label = { Text("Título") },
                 singleLine = true
             )
             TextField(
                 value = mark,
-                onValueChange = { mark = it },
+                onValueChange = { viewModel.markerMark.value = it },
                 label = { Text("Descripción") },
                 singleLine = true
             )
@@ -140,8 +143,8 @@ fun CreateMarker(
             }
             Button(onClick = {
                 viewModel.insertNewMarker(
-                    name = name.text,
-                    mark = mark.text,
+                    name = name,
+                    mark = mark,
                     image = cameraViewModel.capturedImage.value,
                     latitude = latitude,
                     longitude = longitude

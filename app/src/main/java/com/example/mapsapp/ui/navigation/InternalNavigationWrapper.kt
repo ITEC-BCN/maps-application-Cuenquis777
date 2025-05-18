@@ -21,7 +21,7 @@ import com.example.mapsapp.viewmodels.ViewModelMap.AuthViewModel
 fun InternalNavigationWrapper(navController: NavHostController, padding: Modifier) {
 
     NavHost(navController, Destinations.Map) {
-
+        //Navegacion al mapa
         composable<Destinations.Map> {
             MapsScreen(
                 modifier = padding,
@@ -31,6 +31,7 @@ fun InternalNavigationWrapper(navController: NavHostController, padding: Modifie
             )
         }
 
+        //Navegacion a la lista de marcadores
         composable<Destinations.List> {
             MarkerList(
                 modifier = padding,
@@ -40,7 +41,7 @@ fun InternalNavigationWrapper(navController: NavHostController, padding: Modifie
             )
         }
 
-
+        //Navegacion al detalle de uno de la lista de marcadores
         composable<Destinations.MarkerDetails> { backStackEntry ->
             val id = backStackEntry.arguments?.getInt("id") ?: 0
             MarkerDetailScreen(
@@ -52,6 +53,7 @@ fun InternalNavigationWrapper(navController: NavHostController, padding: Modifie
             )
         }
 
+        //Navegacion a la edicion de uno de la lista de marcadores
         composable<Destinations.MarkerEdit> { backStackEntry ->
             val id = backStackEntry.arguments?.getInt("id") ?: 0
             MarkerEditScreen(
@@ -60,7 +62,7 @@ fun InternalNavigationWrapper(navController: NavHostController, padding: Modifie
             )
         }
 
-
+        //Navegacion a la creacion de un nuevo marcador
         composable<Destinations.MarkerCreation> { backStackEntry ->
             val latitude = backStackEntry.arguments?.getDouble("latitud") ?: 0.0
             val longitude = backStackEntry.arguments?.getDouble("longitud") ?: 0.0

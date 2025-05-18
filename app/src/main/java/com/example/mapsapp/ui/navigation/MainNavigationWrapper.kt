@@ -22,12 +22,14 @@ fun MainNavigationWrapper() {
     val navController = rememberNavController()
     NavHost(navController, Permissions) {
 
+        //
         composable<Permissions> {
             PermissionsScreen {
                 navController.navigate(Login)
             }
         }
 
+        //Navegacion al Login
         composable<Login> {
             LoginScreen(
                 navigateToHome = {
@@ -37,12 +39,12 @@ fun MainNavigationWrapper() {
                 },
                 navigateToRegister = {
                     navController.navigate(Destinations.Register) {
-
                     }
                 }
             )
         }
 
+        //Navegacion al registro
         composable<Destinations.Register> {
             RegistreScreen(
                 navigateToHome = {
@@ -57,19 +59,15 @@ fun MainNavigationWrapper() {
             )
         }
 
+        //Navegacion al Drawer
         composable<Drawer> {
             DrawerScreen(
                 logout = {
                     navController.navigate(Login) {
                         popUpTo(Login) { inclusive = true }
                     }
-                },
-
-                viewModel =AuthViewModel(
-                    sharedPreferences = SharedPreferencesHelper(navController.context)
-                )
+                }
             )
-
         }
     }
 }

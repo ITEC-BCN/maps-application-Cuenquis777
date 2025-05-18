@@ -10,7 +10,6 @@ sealed class Destinations {
     @Serializable
     object Register : Destinations() //Pantalla de registro
 
-
     @Serializable
     object Permissions : Destinations() //Pantalla de permisos
 

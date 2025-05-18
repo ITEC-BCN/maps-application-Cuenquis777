@@ -25,7 +25,6 @@ class AuthViewModel(private val sharedPreferences: SharedPreferencesHelper) : Vi
     //Variables para la base de datos
     val database = SupabaseApplication.auth
 
-
     //Variables para auth
     private val _email = MutableLiveData<String>()
     val email = _email

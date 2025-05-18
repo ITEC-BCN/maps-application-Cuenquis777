@@ -27,9 +27,7 @@ fun MapsScreen(
     val viewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(SharedPreferencesHelper(context)))
     val markers = viewModel.markersList.observeAsState(emptyList())
 
-    LaunchedEffect(Unit) {
-        viewModel.getAllMarkers()
-    }
+    viewModel.getAllMarkers()
 
     Column(modifier.fillMaxSize()) {
         val itb = LatLng(41.4534225, 2.1837151)

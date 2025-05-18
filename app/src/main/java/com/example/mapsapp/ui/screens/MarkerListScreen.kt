@@ -34,14 +34,13 @@ fun MarkerList(
     navigateToDetail: (Int) -> Unit
 ) {
     val context = LocalContext.current
-    val viewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(SharedPreferencesHelper(context)))
+    val viewModel: AuthViewModel =
+        viewModel(factory = AuthViewModelFactory(SharedPreferencesHelper(context)))
 
     val showLoading: Boolean by viewModel.loading.observeAsState(true)
     val markers by viewModel.markersList.observeAsState(emptyList())
 
-    LaunchedEffect(Unit) {
-        viewModel.getAllMarkers()
-    }
+    viewModel.getAllMarkers()
 
     if (showLoading) {
         Column(
@@ -70,7 +69,9 @@ fun MarkerList(
                     .fillMaxSize()
                     .padding(top = 100.dp)
             ) {
-                LazyColumn(Modifier.fillMaxWidth().weight(0.6f)) {
+                LazyColumn(Modifier
+                    .fillMaxWidth()
+                    .weight(0.6f)) {
                     items(markers, key = { it.id }) { marker ->
                         val dismissState = rememberSwipeToDismissBoxState()
 
@@ -83,8 +84,9 @@ fun MarkerList(
                         SwipeToDismissBox(
                             state = dismissState,
                             backgroundContent = {
-                                val alignment = if (dismissState.targetValue == SwipeToDismissBoxValue.StartToEnd)
-                                    Alignment.CenterStart else Alignment.CenterEnd
+                                val alignment =
+                                    if (dismissState.targetValue == SwipeToDismissBoxValue.StartToEnd)
+                                        Alignment.CenterStart else Alignment.CenterEnd
                                 Box(
                                     modifier = Modifier
                                         .fillMaxSize()

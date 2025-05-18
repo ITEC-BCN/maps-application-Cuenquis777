@@ -22,9 +22,13 @@ import androidx.navigation.compose.rememberNavController
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mapsapp.AuthViewModelFactory
 import com.example.mapsapp.ui.navigation.DrawerItem
 import com.example.mapsapp.ui.navigation.InternalNavigationWrapper
+import com.example.mapsapp.utils.SharedPreferencesHelper
 import com.example.mapsapp.viewmodels.ViewModelMap.AuthViewModel
 import kotlinx.coroutines.launch
 
@@ -32,11 +36,16 @@ import kotlinx.coroutines.launch
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DrawerScreen(logout: () -> Unit, viewModel: AuthViewModel) {
+fun DrawerScreen(logout: () -> Unit) {
+
+    val context = LocalContext.current
+    val viewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(SharedPreferencesHelper(context)))
+
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var selectedItemIndex by remember { mutableStateOf(0) }
+
     ModalNavigationDrawer(
         gesturesEnabled = false,
         drawerContent = {

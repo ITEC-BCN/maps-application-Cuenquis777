@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,7 +50,8 @@ import com.example.mapsapp.viewmodels.ViewModelMap.CameraViewModel
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MarkerEditScreen(
-    markerId: Int, navigateBack: () -> Unit) {
+    markerId: Int, navigateBack: () -> Unit
+) {
 
     val context = LocalContext.current
     val viewModel: AuthViewModel =
@@ -63,6 +65,7 @@ fun MarkerEditScreen(
     val imageUrl: String? by viewModel.markerImageUrl.observeAsState()
 
     viewModel.getMarker(markerId)
+
 
     Box(modifier = Modifier.fillMaxSize()) {
 

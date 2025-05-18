@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -32,6 +33,7 @@ fun MarkerDetailScreen(markerId: Int, navigateBack: () -> Unit, navigateToEdit: 
     val markerImageUrl by viewModel.markerImageUrl.observeAsState("")
 
     viewModel.getMarker(markerId)
+
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -69,7 +71,7 @@ fun MarkerDetailScreen(markerId: Int, navigateBack: () -> Unit, navigateToEdit: 
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Imagen
+            //Imagen
             if (!markerImageUrl.isNullOrEmpty()) {
                 AsyncImage(
                     model = markerImageUrl,
@@ -96,7 +98,7 @@ fun MarkerDetailScreen(markerId: Int, navigateBack: () -> Unit, navigateToEdit: 
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Botón editar
+            //Botón editar
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
